@@ -1,0 +1,95 @@
+---
+// Off-page SEO visual (dark section): links from other sites point to the store, and the store
+// climbs in search. Decorative; the section's points carry the meaning.
+import Arrow from "../brand/Arrow.astro";
+import Icon from "../ui/Icon.astro";
+---
+<figure class="lflow" data-inview aria-hidden="true">
+  <svg class="lf-wires" viewBox="0 0 600 360" preserveAspectRatio="none">
+    <path d="M150 70 C 230 70, 230 180, 300 180" />
+    <path d="M150 180 C 220 180, 230 180, 300 180" />
+    <path d="M150 290 C 230 290, 230 180, 300 180" />
+    <path class="lf-out" d="M300 180 C 380 180, 380 110, 455 110" />
+  </svg>
+
+  <ul class="lf-sites">
+    {["SITE A", "SITE B", "SITE C"].map((t, n) => (
+      <li style={`--n:${n}`}><Icon name="link" /><span class="mono">{t}</span></li>
+    ))}
+  </ul>
+
+  <div class="lf-store">
+    <span class="lf-mark"><Arrow /></span>
+    <span class="mono">YOUR STORE</span>
+  </div>
+
+  <div class="lf-rank">
+    <p class="mono">SEARCH</p>
+    <ol>
+      <li><i style="--w:70%"></i></li>
+      <li class="is-you"><span class="lf-dot"></span><i style="--w:85%"></i><span class="lf-up">▲</span></li>
+      <li><i style="--w:55%"></i></li>
+    </ol>
+  </div>
+</figure>
+
+<style>
+  .lflow {
+    position: relative; aspect-ratio: 600 / 360;
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(60% 60% at 50% 50%, rgb(242 110 83 / 0.16), transparent 70%),
+      rgb(255 255 255 / 0.04);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  }
+  /* drawn left→right, mirrored so the flow reads right→left: sites → store → search */
+  .lf-wires { position: absolute; inset: 0; width: 100%; height: 100%; transform: scaleX(-1); fill: none; stroke: rgb(255 255 255 / 0.28); stroke-width: 2; stroke-dasharray: 6 8; }
+  .lf-wires path { vector-effect: non-scaling-stroke; }
+  .is-inview .lf-wires path { stroke: var(--coral); animation: lf-flow 1.4s linear infinite; }
+  @keyframes lf-flow { to { stroke-dashoffset: -28; } }
+
+  .lf-sites { position: absolute; inset-inline-start: 6%; top: 8%; bottom: 8%; display: grid; align-content: space-between; justify-items: start; }
+  .lf-sites li {
+    display: flex; align-items: center; gap: 0.45rem;
+    padding: 0.45rem 0.8rem; border-radius: 14px;
+    background: #fff; color: var(--ink); font-size: 0.72rem;
+    opacity: 0.5; translate: 8px 0;
+    transition: opacity 0.5s calc(var(--n) * 0.18s), translate 0.6s var(--ease-out) calc(var(--n) * 0.18s);
+  }
+  .lf-sites :global(.icon) { width: 18px; height: 18px; color: var(--coral-700); }
+  .is-inview .lf-sites li { opacity: 1; translate: 0 0; }
+
+  .lf-store {
+    position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+    display: grid; justify-items: center; gap: 0.4rem;
+    color: #fff; font-size: 0.7rem;
+  }
+  .lf-mark {
+    display: grid; place-items: center; width: clamp(64px, 7vw, 92px); aspect-ratio: 1; border-radius: 50%;
+    background: var(--coral); color: #fff; box-shadow: 0 0 0 10px rgb(242 110 83 / 0.18);
+  }
+  .lf-mark :global(.arrow-mark) { width: 52%; }
+  .is-inview .lf-mark { animation: lf-pulse 2.4s ease-in-out infinite 1s; }
+  @keyframes lf-pulse { 50% { box-shadow: 0 0 0 18px rgb(242 110 83 / 0.08); } }
+
+  .lf-rank {
+    position: absolute; inset-inline-end: 5%; top: 14%; width: 30%;
+    display: grid; gap: 0.5rem; padding: 0.75rem; border-radius: 16px;
+    background: #fff; color: var(--muted); font-size: 0.68rem;
+  }
+  /* the store's result swaps places with the one above it */
+  .lf-rank ol { display: grid; gap: 0.45rem; }
+  .lf-rank li { position: relative; display: flex; align-items: center; gap: 0.35rem; transition: translate 0.8s var(--ease-spring) 0.8s; }
+  .lf-rank i { display: block; height: 7px; width: var(--w); border-radius: 99px; background: var(--line); }
+  .lf-rank .is-you i { background: var(--coral); }
+  .lf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); flex: none; }
+  .lf-up { color: var(--ok); font-size: 0.7rem; line-height: 1; }
+  .is-inview .lf-rank .is-you { translate: 0 calc(-100% - 0.45rem); }
+  .is-inview .lf-rank li:first-child { translate: 0 calc(100% + 0.45rem); }
+
+  @media (max-width: 560px) {
+    .lflow { aspect-ratio: 600 / 420; }
+    .lf-sites li { padding: 0.35rem 0.55rem; font-size: 0.62rem; }
+    .lf-rank { width: 34%; padding: 0.55rem; }
+  }
+</style>

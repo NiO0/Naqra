@@ -1,0 +1,72 @@
+---
+// Shared layout for /privacy and /terms. Until the approved text exists (data/legal.ts) it shows a
+// placeholder notice and asks search engines not to index the page.
+import Base from "../../layouts/Base.astro";
+import PageHero from "../sections/PageHero.astro";
+import { labels, type LegalPage } from "../../data/legal";
+import { footer } from "../../data/home";
+interface Props { page: LegalPage }
+const { page } = Astro.props;
+const pending = page.sections.length === 0;
+---
+<Base title={`${page.title} | نقرة`} description={page.description} noindex={pending}>
+  <PageHero eyebrow={labels.eyebrow} title={{ before: "", mark: page.title }} compact />
+
+  <section class="section legal" aria-label={page.title}>
+    <div class="container legal-grid">
+      {pending ? (
+        <div class="legal-pending" data-reveal>
+          <p class="mono legal-latin">{page.latin}</p>
+          <p>{labels.pending} <a href={`mailto:${footer.email}`} class="link-arrow" dir="ltr">{footer.email.toLowerCase()}</a></p>
+        </div>
+      ) : (
+        <>
+          <nav class="legal-toc" aria-label={labels.toc}>
+            <p class="legal-toc-title">{labels.toc}</p>
+            <ol>
+              {page.sections.map((s, i) => (
+                <li><a href={`#${s.id}`}><span class="mono">{String(i + 1).padStart(2, "0")}</span> {s.heading}</a></li>
+              ))}
+            </ol>
+          </nav>
+          <article class="legal-body">
+            {page.updated && <p class="legal-updated">{labels.updated}: <time datetime={page.updated}>{page.updated}</time></p>}
+            {page.sections.map((s, i) => (
+              <section id={s.id} class="legal-sec">
+                <h2><span class="mono">{String(i + 1).padStart(2, "0")}</span> {s.heading}</h2>
+                {s.body.map((para) => <p>{para}</p>)}
+              </section>
+            ))}
+          </article>
+        </>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal { background: var(--paper); padding-top: clamp(2rem, 4vw, 4rem); }
+  .legal-grid { display: grid; grid-template-columns: minmax(0, 18rem) minmax(0, 48rem); gap: clamp(2rem, 5vw, 6rem); }
+  .legal-pending {
+    grid-column: 1 / -1; max-width: 48rem; display: grid; gap: 0.75rem;
+    padding: clamp(1.5rem, 3vw, 3rem); border-radius: var(--radius-lg);
+    background: var(--cream); box-shadow: inset 0 0 0 1px var(--line);
+    font-size: var(--fs-lead); line-height: 1.9;
+  }
+  .legal-latin { color: var(--coral-700); font-weight: 600; }
+  .legal-toc { position: sticky; top: 7rem; align-self: start; display: grid; gap: 0.75rem; }
+  .legal-toc-title { font-weight: 600; color: var(--heading); }
+  .legal-toc ol { display: grid; gap: 0.35rem; border-inline-start: 2px solid var(--line); padding-inline-start: 1rem; }
+  .legal-toc a { color: var(--muted); transition: color 0.3s; }
+  .legal-toc a:hover { color: var(--coral-700); }
+  .legal-body { display: grid; gap: 2.5rem; }
+  .legal-updated { color: var(--muted); font-size: 0.9rem; }
+  .legal-sec { display: grid; gap: 0.9rem; scroll-margin-top: 7rem; }
+  .legal-sec h2 { font-family: var(--font-head); font-size: clamp(1.3rem, 1.7vw, 1.75rem); line-height: 1.4; }
+  .legal-sec h2 .mono { color: var(--coral-700); font-size: 0.8em; }
+  .legal-sec p { line-height: 1.95; }
+  @media (max-width: 860px) {
+    .legal-grid { grid-template-columns: minmax(0, 1fr); }
+    .legal-toc { position: static; }
+  }
+</style>

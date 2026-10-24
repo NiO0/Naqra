@@ -1,5 +1,6 @@
 ---
 import { footer, routes } from "../data/home";
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const year = new Date().getFullYear();
 ---
 <footer class="footer" data-theme="dark">
@@ -12,7 +13,7 @@ const year = new Date().getFullYear();
       <ol>
         {footer.menu.map((m, i) => (
           <li>
-            <a href={m.href} class="ft-link">
+            <a href={m.href} class="ft-link" aria-current={m.href === path ? "page" : undefined}>
               <span class="ft-n">{String(i + 1).padStart(2, "0")}</span>
               <span class="ft-label">{m.label}</span>
             </a>
@@ -36,6 +37,9 @@ const year = new Date().getFullYear();
 
   <div class="container ft-bottom">
     <p>© {year} نقرة. جميع الحقوق محفوظة.</p>
+    <ul class="ft-legal" aria-label="قانوني">
+      {footer.legal.map((l) => <li><a href={l.href} aria-current={l.href === path ? "page" : undefined}>{l.label}</a></li>)}
+    </ul>
     <p class="mono">{footer.platforms}</p>
   </div>
 </footer>
@@ -64,7 +68,7 @@ const year = new Date().getFullYear();
   }
   .ft-n { direction: ltr; }
   .ft-label { transition: translate 0.45s var(--ease-out); }
-  .ft-link:hover { color: #fff; }
+  .ft-link:hover, .ft-link[aria-current="page"] { color: #fff; }
   .ft-link:hover .ft-label { translate: 0.6rem 0; }
 
   .ft-mid { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; margin-top: clamp(2rem, 2.1vw, 2.6rem); }
@@ -87,6 +91,10 @@ const year = new Date().getFullYear();
     border-top: 1px solid var(--muted);
     color: var(--muted-2); font-size: var(--fs-mono); line-height: 1.65;
   }
+
+  .ft-legal { display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; margin-inline-end: auto; }
+  .ft-legal a { transition: color 0.3s; text-underline-offset: 3px; }
+  .ft-legal a:hover, .ft-legal a[aria-current="page"] { color: #fff; text-decoration: underline; }
 
   @media (max-width: 860px) {
     .ft-top { flex-direction: column; gap: 2.5rem; }

@@ -1,0 +1,73 @@
+---
+// AI workflow visual: pick products → pick the optimization → AI rewrites the field.
+// Uses the illustrative tshirt example from the content doc.
+import Icon from "../ui/Icon.astro";
+interface Props { before: string; after: string }
+const { before, after } = Astro.props;
+const options = ["العناوين", "الأوصاف", "بيانات SEO", "الصور"];
+---
+<figure class="aied" data-inview aria-hidden="true">
+  <div class="ae-top">
+    <span class="ae-dots"><i></i><i></i><i></i></span>
+    <span class="ae-count"><b>3</b> منتجات محددة</span>
+  </div>
+  <div class="ae-body">
+    <ul class="ae-products">
+      {["tshirt", "bottle", "bag"].map((k, n) => (
+        <li style={`--n:${n}`}>
+          <i class="ae-cb"><img src="/art/how-check-white.svg" alt="" width="12" height="12" /></i>
+          <img src={`/art/thumb-${k}.svg`} alt="" width="34" height="34" />
+          <span class="ae-sk"></span>
+        </li>
+      ))}
+    </ul>
+    <div class="ae-options">
+      {options.map((o, n) => <span class:list={["ae-opt", n < 2 && "is-on"]} style={`--n:${n}`}>{o}</span>)}
+    </div>
+    <div class="ae-field">
+      <p class="ae-label mono">TITLE</p>
+      <p class="ae-before">{before}</p>
+      <p class="ae-after"><Icon name="spark" class="ae-spark" /> <span>{after}</span></p>
+      <span class="ae-shimmer"></span>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .aied {
+    border-radius: var(--radius-lg); overflow: hidden;
+    background: #fff; box-shadow: inset 0 0 0 1px var(--line), 0 40px 80px -50px rgb(125 38 20 / 0.35);
+    font-size: var(--fs-mono); line-height: 1.65;
+  }
+  .ae-top { display: flex; align-items: center; justify-content: space-between; padding: 0.8rem 1.1rem; border-bottom: 1px solid var(--line); }
+  .ae-dots { display: flex; gap: 5px; }
+  .ae-dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+  .ae-count { color: var(--muted); }
+  .ae-count b { color: var(--coral-700); font-family: var(--font-mono); }
+  .ae-body { display: grid; gap: 1rem; padding: clamp(1rem, 1.6vw, 1.6rem); }
+
+  .ae-products { display: grid; gap: 0.5rem; }
+  .ae-products li { display: grid; grid-template-columns: 20px 34px 1fr; align-items: center; gap: 0.7rem; }
+  .ae-products li > img { width: 34px; height: 34px; }
+  .ae-cb { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 6px; box-shadow: inset 0 0 0 1.5px var(--muted-2); transition: background-color 0.3s calc(var(--n) * 0.18s + 0.2s), box-shadow 0.3s calc(var(--n) * 0.18s + 0.2s); }
+  .ae-cb img { transform: scale(0); transition: transform 0.35s var(--ease-spring) calc(var(--n) * 0.18s + 0.25s); }
+  .is-inview .ae-cb { background: var(--ink); box-shadow: none; }
+  .is-inview .ae-cb img { transform: scale(1); }
+  .ae-sk { height: 8px; border-radius: 99px; background: var(--line); width: calc(85% - var(--n) * 14%); }
+
+  .ae-options { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .ae-opt { padding: 0.3rem 0.8rem; border-radius: 99px; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line-strong); transition: background-color 0.3s calc(var(--n) * 0.15s + 0.7s), color 0.3s calc(var(--n) * 0.15s + 0.7s), box-shadow 0.3s calc(var(--n) * 0.15s + 0.7s); }
+  .is-inview .ae-opt.is-on { background: var(--coral-100); color: var(--coral-700); box-shadow: inset 0 0 0 1px var(--coral); }
+
+  .ae-field { position: relative; display: grid; padding: 0.9rem 1rem; border-radius: 16px; background: var(--cream); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+  .ae-label { color: var(--muted); font-size: 0.68rem; }
+  .ae-before, .ae-after { grid-area: 2 / 1; font-family: var(--font-display); font-size: clamp(0.9rem, 1vw, 1.05rem); line-height: 1.6; transition: opacity 0.5s, translate 0.6s var(--ease-out); }
+  .ae-before { color: var(--muted); transition-delay: 1.6s; }
+  .ae-after { display: flex; gap: 0.4rem; align-items: flex-start; font-weight: 600; color: var(--ink); opacity: 0; translate: 0 10px; transition-delay: 1.9s; }
+  .ae-spark { width: 20px; height: 20px; color: var(--coral); flex: none; margin-top: 0.15rem; }
+  .is-inview .ae-before { opacity: 0; translate: 0 -10px; }
+  .is-inview .ae-after { opacity: 1; translate: 0 0; }
+  .ae-shimmer { position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgb(249 194 181 / 0.7) 50%, transparent 70%); translate: 110% 0; pointer-events: none; }
+  .is-inview .ae-shimmer { animation: ae-sweep 1.2s var(--ease-out) 0.9s 1 both; }
+  @keyframes ae-sweep { from { translate: 110% 0; } to { translate: -110% 0; } }
+</style>

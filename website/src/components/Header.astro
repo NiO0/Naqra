@@ -3,6 +3,10 @@ import Logo from "./brand/Logo.astro";
 import Icon from "./ui/Icon.astro";
 import Button from "./ui/Button.astro";
 import { nav, routes } from "../data/home";
+
+// Marks the link of the page being viewed (trailing slashes ignored)
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const current = (href: string) => (href === path ? "page" : undefined);
 ---
 <header class="site-header" data-header>
   <div class="hdr-bar container">
@@ -14,7 +18,7 @@ import { nav, routes } from "../data/home";
     <nav class="hdr-nav" aria-label="القائمة الرئيسية">
       <ul class="hdr-links">
         <li class="has-mega" data-mega>
-          <button class="nav-link" type="button" aria-expanded="false" aria-controls="mega-features" data-mega-btn>
+          <button class:list={["nav-link", path === routes.features && "is-current"]} type="button" aria-expanded="false" aria-controls="mega-features" data-mega-btn>
             المزايا <Icon name="chevron" class="nav-chev" />
           </button>
           <div class="mega" id="mega-features" data-mega-panel>
@@ -38,7 +42,7 @@ import { nav, routes } from "../data/home";
           </div>
         </li>
         {nav.links.map((l) => (
-          <li><a class="nav-link" href={l.href}>{l.label}</a></li>
+          <li><a class="nav-link" href={l.href} aria-current={current(l.href)}>{l.label}</a></li>
         ))}
       </ul>
     </nav>
@@ -68,9 +72,9 @@ import { nav, routes } from "../data/home";
           </details>
         </li>
         {nav.links.map((l) => (
-          <li class="mm-item"><a class="mm-link" href={l.href}>{l.label}</a></li>
+          <li class="mm-item"><a class="mm-link" href={l.href} aria-current={current(l.href)}>{l.label}</a></li>
         ))}
-        <li class="mm-item"><a class="mm-link" href={routes.contact}>تواصل معنا</a></li>
+        <li class="mm-item"><a class="mm-link" href={routes.contact} aria-current={current(routes.contact)}>تواصل معنا</a></li>
       </ul>
       <div class="mm-foot">
         <Button href={nav.cta.href} variant="light">{nav.cta.label}</Button>
@@ -116,6 +120,7 @@ import { nav, routes } from "../data/home";
     transition: background-color 0.3s;
   }
   .nav-link:hover, .nav-link[aria-expanded="true"] { background: color-mix(in srgb, currentColor 12%, transparent); }
+  .nav-link[aria-current="page"], .nav-link.is-current { color: var(--coral-700); font-weight: 600; }
   .nav-chev { width: 16px; height: 16px; transition: transform 0.4s var(--ease-out); }
   .nav-link[aria-expanded="true"] .nav-chev { transform: rotate(180deg); }
 
@@ -202,6 +207,7 @@ import { nav, routes } from "../data/home";
     list-style: none;
   }
   .mm-link::-webkit-details-marker { display: none; }
+  .mm-link[aria-current="page"] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.3em; }
   .mm-plus { width: 28px; height: 28px; transition: transform 0.45s var(--ease-out); }
   .mm-details[open] .mm-plus { transform: rotate(45deg); }
   .mm-sub { display: grid; gap: 0.2rem; padding-bottom: 1rem; }

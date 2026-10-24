@@ -1,0 +1,191 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/sections/PageHero.astro";
+import FinalCta from "../components/sections/FinalCta.astro";
+import Faq from "../components/sections/Faq.astro";
+import SectionHead from "../components/ui/SectionHead.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+import { meta, hero, billing, currency, plans, comparison, finalCta, faqs } from "../data/pricing";
+---
+<Base title={meta.title} description={meta.description}>
+  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} primary={hero.primary} compact />
+
+  <section class="section plans" id="plans" aria-labelledby="plans-title">
+    <div class="container">
+      <div class="plans-head">
+        <SectionHead eyebrow={plans.eyebrow} id="plans-title" sub={billing.sub}>{plans.headline}</SectionHead>
+
+        <div class="bill" data-billing data-mode="monthly" data-reveal>
+          <div class="bill-switch" role="radiogroup" aria-label="مدة الاشتراك">
+            <span class="bill-knob" aria-hidden="true"></span>
+            <button type="button" role="radio" aria-checked="true" data-bill-btn="monthly">{billing.monthly}</button>
+            <button type="button" role="radio" aria-checked="false" data-bill-btn="annual">
+              {billing.annual}
+              {billing.annualDiscount && <span class="bill-off">{billing.annualDiscount}</span>}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <ul class:list={["plan-grid", `has-${plans.items.length}`]}>
+        {plans.items.map((p) => (
+          <li class:list={["plan", p.featured && "is-featured"]} data-reveal="card">
+            <div class="plan-top">
+              <p class="plan-latin mono">{p.latin}</p>
+              <h3 class="plan-name">{p.name}</h3>
+              <p class="plan-for">{p.forWho}</p>
+            </div>
+
+            <p class="plan-price" aria-live="polite">
+              <span class="plan-amount" data-bill data-monthly={String(p.monthly.price)} data-annual={String(p.annual.price)}>{p.monthly.price}</span>
+              <span class="plan-cur">{currency} <span data-bill data-monthly={plans.periods.monthly} data-annual={plans.periods.annual}>{plans.periods.monthly}</span></span>
+            </p>
+
+            <div class="plan-credits">
+              <span class="plan-credits-k">{plans.creditsLabel}</span>
+              <b data-bill data-monthly={p.monthly.credits} data-annual={p.annual.credits}>{p.monthly.credits}</b>
+            </div>
+
+            <ul class="plan-limits">
+              {p.limits.map((l) => <li><Icon name="check" strokeWidth={3.5} /> {l}</li>)}
+            </ul>
+
+            <Button href={p.cta.href} variant={p.featured ? "light" : "dark"} class="plan-cta">{p.cta.label}</Button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section compare" id="compare" aria-labelledby="cmp-title">
+    <div class="container">
+      <SectionHead eyebrow={comparison.eyebrow} center id="cmp-title" sub={comparison.sub}>{comparison.headline}</SectionHead>
+
+      <div class="cmp-wrap" data-reveal>
+        <table class="cmp">
+          <caption class="sr-only">{comparison.headline}</caption>
+          <thead>
+            <tr>
+              <th scope="col">{comparison.featureLabel}</th>
+              {plans.items.map((p) => (
+                <th scope="col" class:list={[p.featured && "is-featured"]}>
+                  <span class="cmp-plan">{p.name}</span>
+                  <span class="cmp-price mono" data-bill data-monthly={`${p.monthly.price} ${currency} ${plans.periods.monthly}`} data-annual={`${p.annual.price} ${currency} ${plans.periods.annual}`}>{`${p.monthly.price} ${currency} ${plans.periods.monthly}`}</span>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          {comparison.groups.map((g) => (
+            <tbody>
+              <tr class="cmp-group"><th scope="colgroup" colspan={plans.items.length + 1}>{g.title}</th></tr>
+              {g.rows.map((r) => (
+                <tr>
+                  <th scope="row">{r.k}</th>
+                  {r.v.map((v, i) => (
+                    <td class:list={[plans.items[i]?.featured && "is-featured"]}>
+                      {v === true ? (
+                        <span class="cmp-yes"><Icon name="check" strokeWidth={4} /><span class="sr-only">مشمول</span></span>
+                      ) : v === false ? (
+                        <span class="cmp-no"><Icon name="close" strokeWidth={4} /><span class="sr-only">غير مشمول</span></span>
+                      ) : v}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          ))}
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <FinalCta copy={finalCta} />
+  <Faq {...faqs} />
+</Base>
+
+<style>
+  /* ---------- Plans ---------- */
+  .plans { background: var(--paper); padding-top: clamp(3rem, 5vw, 6rem); scroll-margin-top: 1rem; }
+  .plans-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
+  .plans-head :global(.lead) { max-width: 40rem; }
+
+  .bill-switch {
+    position: relative; display: grid; grid-template-columns: 1fr 1fr;
+    min-width: 17rem; padding: 5px; border-radius: 99px; background: var(--sand);
+  }
+  .bill-switch button {
+    position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.7rem 1.4rem; border-radius: 99px; font-weight: 500; color: var(--ink); transition: color 0.45s;
+  }
+  .bill-switch button[aria-checked="true"] { color: #fff; font-weight: 600; }
+  .bill-knob {
+    position: absolute; top: 5px; bottom: 5px; inset-inline-start: 5px; width: calc(50% - 5px);
+    border-radius: 99px; background: var(--ink); transition: translate 0.6s var(--ease-spring);
+  }
+  [data-mode="annual"] .bill-knob { translate: -100% 0; }
+  .bill-off { padding: 0.05rem 0.5rem; border-radius: 99px; background: var(--coral); color: #fff; font-size: 0.75rem; }
+
+  .plan-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 1.8vw, 2rem); margin-top: clamp(2rem, 3.5vw, 3.5rem); }
+  .plan-grid.has-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .plan {
+    display: flex; flex-direction: column; gap: 1.5rem;
+    padding: clamp(1.5rem, 2.5vw, 3rem); border-radius: var(--radius-lg);
+    background: var(--cream); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .plan.is-featured { background: var(--coral); color: #fff; box-shadow: 0 40px 80px -40px rgb(242 110 84 / 0.6); }
+  .plan-top { display: grid; gap: 0.35rem; }
+  .plan-latin { color: var(--coral-700); font-weight: 600; }
+  .is-featured .plan-latin { color: var(--ink); }
+  .plan-name { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.7rem, 2.4vw, 2.75rem); line-height: 1.3; }
+  .plan-for { color: var(--muted); }
+  .is-featured .plan-for { color: #fff; opacity: 0.9; }
+
+  .plan-price { display: flex; align-items: baseline; gap: 0.75rem; padding-block: 1.25rem; border-block: 1px dashed color-mix(in srgb, currentColor 35%, transparent); overflow: hidden; }
+  .plan-amount { display: inline-block; font-family: var(--font-mono); font-weight: 700; font-size: clamp(3.25rem, 5vw, 5.5rem); line-height: 1; direction: ltr; }
+  .plan-cur { font-weight: 500; font-size: 1.05rem; }
+  .plan-cur span { display: inline-block; }
+
+  .plan-credits { display: grid; gap: 0.2rem; }
+  .plan-credits-k { font-size: 0.85rem; color: var(--muted); }
+  .is-featured .plan-credits-k { color: #fff; opacity: 0.85; }
+  .plan-credits b { display: inline-block; font-size: 1.2rem; font-weight: 600; }
+
+  .plan-limits { display: grid; gap: 0.6rem; }
+  .plan-limits li { display: flex; align-items: center; gap: 0.6rem; }
+  .plan-limits :global(.icon) { width: 20px; height: 20px; padding: 3px; border-radius: 50%; background: var(--ink); color: #fff; flex: none; }
+  .is-featured .plan-limits :global(.icon) { background: #fff; color: var(--coral-700); }
+  .plan :global(.plan-cta) { margin-top: auto; width: 100%; }
+
+  /* ---------- Comparison table ---------- */
+  .compare { background: var(--cream); }
+  .compare :global(.h2) { max-width: 60rem; }
+  .cmp-wrap { margin-top: clamp(2rem, 3.5vw, 3.5rem); overflow-x: auto; border-radius: var(--radius-lg); background: #fff; box-shadow: inset 0 0 0 1px var(--line); }
+  .cmp { width: 100%; min-width: 34rem; border-collapse: collapse; text-align: center; }
+  .cmp th, .cmp td { padding: 1rem clamp(0.75rem, 1.5vw, 1.75rem); border-bottom: 1px solid var(--line); vertical-align: middle; line-height: 1.6; }
+  .cmp thead th { padding-block: 1.4rem; background: var(--ink); color: #fff; font-weight: 600; }
+  .cmp thead th:first-child { text-align: start; font-weight: 500; color: var(--muted-2); }
+  .cmp thead th.is-featured { background: var(--coral); }
+  .cmp-plan { display: block; font-family: var(--font-head); font-size: clamp(1.05rem, 1.3vw, 1.4rem); }
+  .cmp-price { display: inline-block; font-size: 0.8rem; opacity: 0.85; direction: rtl; }
+  .cmp tbody th { text-align: start; font-weight: 500; width: 46%; }
+  .cmp td { font-size: 0.95rem; color: var(--ink); }
+  .cmp td.is-featured { background: var(--coral-50); }
+  .cmp-group th { padding-block: 0.7rem; background: var(--sand); font-size: 0.85rem; font-weight: 600; color: var(--heading); }
+  .cmp tbody:last-child tr:last-child > * { border-bottom: 0; }
+  .cmp-yes, .cmp-no { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; }
+  .cmp-yes { background: var(--ok); color: #fff; }
+  .cmp-no { background: var(--sand); color: var(--muted); }
+  .cmp-yes :global(.icon), .cmp-no :global(.icon) { width: 18px; height: 18px; }
+
+  @media (max-width: 900px) {
+    .plan-grid, .plan-grid.has-3 { grid-template-columns: minmax(0, 1fr); max-width: 34rem; margin-inline: auto; }
+  }
+  @media (max-width: 600px) {
+    .bill, .bill-switch { width: 100%; min-width: 0; }
+    .cmp { min-width: 0; font-size: 0.85rem; }
+    .cmp th, .cmp td { padding: 0.8rem 0.5rem; }
+    .cmp tbody th { width: 44%; }
+    .cmp td { font-size: 0.82rem; }
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+// Manual ↔ Naqra comparison board with a switch (scripts/compare.ts flips it to "naqra" once in view).
+// One per page: the script binds the first [data-compare] it finds.
+interface Props {
+  rows: { k: string; manual: string; naqra: string }[];
+  manualLabel: string;
+  naqraLabel: string;
+  label?: string;
+  class?: string;
+}
+const { rows, manualLabel, naqraLabel, label = "طريقة التحسين", class: cls = "" } = Astro.props;
+---
+<div class:list={["ia-board", cls]} data-compare data-mode="manual">
+  <div class="ia-switch" role="radiogroup" aria-label={label}>
+    <span class="ia-knob" aria-hidden="true"></span>
+    <button type="button" role="radio" aria-checked="true" data-mode-btn="manual">{manualLabel}</button>
+    <button type="button" role="radio" aria-checked="false" data-mode-btn="naqra">
+      {naqraLabel} <img src="/art/logo-mark-coral.svg" alt="" width="21" height="22" class="ia-switch-mark" />
+    </button>
+  </div>
+
+  <dl class="ia-rows">
+    {rows.map((r, i) => (
+      <div class="ia-row" style={`--r:${i}`}>
+        <dt class="ia-k">{r.k}</dt>
+        <dd class="ia-v">
+          <span class="ia-val ia-val--manual">{r.manual}</span>
+          <span class="ia-val ia-val--naqra">{r.naqra}</span>
+        </dd>
+      </div>
+    ))}
+  </dl>
+</div>
+
+<style>
+  /* ---------- Manual vs Naqra board (coral once Naqra is on) ---------- */
+  .ia-board {
+    position: relative;
+    display: grid; align-content: start; gap: 1.25rem;
+    padding: clamp(1.25rem, 1.7vw, 2rem) clamp(1.25rem, 1.9vw, 2.25rem) clamp(1.25rem, 1.6vw, 1.875rem);
+    border-radius: var(--radius-lg);
+    background: #fff; color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition: background-color 0.7s var(--ease-out), color 0.7s var(--ease-out), box-shadow 0.7s;
+    overflow: hidden;
+  }
+  .ia-board[data-mode="naqra"] { background: var(--coral); color: #fff; box-shadow: 0 40px 80px -40px rgb(242 110 84 / 0.55); }
+
+  .ia-switch {
+    position: relative; display: grid; grid-template-columns: 1fr 1fr;
+    padding: 5px; border-radius: 99px;
+    background: var(--sand);
+    transition: background-color 0.6s;
+  }
+  [data-mode="naqra"] .ia-switch { background: #fff; }
+  .ia-switch button {
+    position: relative; z-index: 1;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    padding: 0.75rem 1rem; border-radius: 99px;
+    font-size: 1rem; font-weight: 400; color: var(--ink);
+    transition: color 0.5s;
+  }
+  .ia-switch button[aria-checked="true"] { color: #fff; font-weight: 600; }
+  .ia-knob {
+    position: absolute; top: 5px; bottom: 5px; inset-inline-start: 5px; width: calc(50% - 5px);
+    border-radius: 99px; background: var(--ink);
+    transition: translate 0.65s var(--ease-spring);
+  }
+  [data-mode="naqra"] .ia-knob { translate: -100% 0; }
+  .ia-switch-mark { width: 21px; height: auto; }
+
+  .ia-rows { display: grid; }
+  .ia-row {
+    display: grid; grid-template-columns: 5.6rem 1fr; align-items: center; gap: 1rem;
+    padding-block: 1rem;
+    border-bottom: 1px dashed color-mix(in srgb, currentColor 45%, transparent);
+  }
+  [data-mode="naqra"] .ia-row { border-bottom-color: #fff; }
+  .ia-k { font-size: var(--fs-mono); line-height: 1.65; }
+  .ia-v { display: grid; overflow: hidden; padding-block: 0.15em; margin: 0; }
+  .ia-val {
+    grid-area: 1 / 1; font-family: var(--font-display); font-weight: 600;
+    font-size: var(--fs-h3); line-height: 1.5;
+    transition: transform 0.7s var(--ease-out), opacity 0.5s, rotate 0.7s var(--ease-spring);
+    transition-delay: calc(var(--r) * 60ms);
+  }
+  .ia-val--manual { color: var(--muted); }
+  .ia-val--naqra { transform: translateY(110%); opacity: 0; }
+  /* manual mode: deliberately messy */
+  [data-mode="manual"] .ia-row:nth-child(odd) .ia-val--manual { rotate: -1.2deg; }
+  [data-mode="manual"] .ia-row:nth-child(even) .ia-val--manual { rotate: 0.9deg; translate: -0.4rem 0; }
+  [data-mode="naqra"] .ia-val--manual { transform: translateY(-110%); opacity: 0; }
+  [data-mode="naqra"] .ia-val--naqra { transform: none; opacity: 1; }
+
+  @media (max-width: 480px) {
+    .ia-row { grid-template-columns: 4.2rem 1fr; }
+    .ia-switch button { font-size: 0.88rem; padding: 0.65rem 0.5rem; }
+  }
+</style>

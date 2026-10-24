@@ -1,6 +1,6 @@
 // Hero dashboard demo, driven by the hero's pressed button (scripts/hero.ts):
 // "optimize all" fires, rows get selected and rewritten one by one while scores climb.
-import { gsap, $, $$, reduced } from "./core";
+import { gsap, $, $$, reduced, whileVisible } from "./core";
 
 const C = 2 * Math.PI * 15;
 const AMBER = "#e9a23b";
@@ -102,4 +102,16 @@ export function initDashboard(): DashboardDemo | null {
 
   setState(false);
   return { play };
+}
+
+/** Outside the home hero (e.g. the Features hero): run "optimize all" whenever the dashboard is on screen. */
+export function autoplayDashboard(dash: DashboardDemo | null, every = 9) {
+  const el = $("[data-dash]");
+  if (!dash || !el) return;
+  let visible = false;
+  whileVisible(el, (v) => {
+    visible = v;
+    if (v) dash.play();
+  }, "-15% 0px");
+  setInterval(() => { if (visible && !document.hidden) dash.play(); }, every * 1000);
 }

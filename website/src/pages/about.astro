@@ -1,0 +1,146 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/sections/PageHero.astro";
+import FinalCta from "../components/sections/FinalCta.astro";
+import SectionHead from "../components/ui/SectionHead.astro";
+import InfoCard from "../components/ui/InfoCard.astro";
+import Marquee from "../components/ui/Marquee.astro";
+import Icon from "../components/ui/Icon.astro";
+import { tagline } from "../data/home";
+import { meta, hero, platformsLine, intro, why, mission, values, finalCta } from "../data/about";
+---
+<Base title={meta.title} description={meta.description}>
+  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} primary={hero.primary}>
+    <div slot="visual" class="about-hero-art">
+      <img src="/art/illus-hero.svg" alt="" width="420" height="330" />
+    </div>
+  </PageHero>
+
+  <!-- Moving line of supported platforms -->
+  <section class="pf-line" aria-label="المنصات المدعومة">
+    <div class="pf-band">
+      <Marquee items={platformsLine} separator="✳" speed={0.7} />
+    </div>
+  </section>
+
+  <section class="section about-intro" aria-labelledby="intro-title">
+    <div class="container intro-grid">
+      <div class="intro-copy">
+        <SectionHead eyebrow={intro.eyebrow} id="intro-title">{intro.headline}</SectionHead>
+        {intro.paragraphs.map((p) => <p class="lead intro-p" data-reveal>{p}</p>)}
+      </div>
+      <figure class="brand-card" data-reveal="card">
+        <img class="brand-logo" src="/art/logo-reversed.svg" alt="نقرة — NAQRA" width="521" height="300" loading="lazy" />
+        <figcaption class="mono">{tagline}</figcaption>
+        <img class="brand-sparkle" src="/art/sparkle-lg.svg" alt="" width="44" height="44" />
+      </figure>
+    </div>
+  </section>
+
+  <section class="section about-why" aria-labelledby="why-title">
+    <div class="container">
+      <SectionHead eyebrow={why.eyebrow} center id="why-title">{why.headline}</SectionHead>
+      <div class="why-pair">
+        <article class="why-block is-problem" data-reveal="card">
+          <p class="why-label">{why.problem.label}</p>
+          <p class="why-text">{why.problem.text}</p>
+        </article>
+        <span class="why-arrow" aria-hidden="true"><Icon name="arrowStart" /></span>
+        <article class="why-block is-answer" data-reveal="card">
+          <p class="why-label">{why.answer.label}</p>
+          <p class="why-text">{why.answer.text}</p>
+          <img class="why-cursor" src="/art/brand-cursor.svg" alt="" width="60" height="62" />
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section mission" data-theme="dark" aria-labelledby="mission-title">
+    <div class="container mission-inner">
+      <SectionHead eyebrow={mission.headline} center id="mission-title">{mission.text}</SectionHead>
+      <img class="mission-circle" src="/art/doodle-circle.svg" alt="" width="170" height="100" aria-hidden="true" />
+    </div>
+  </section>
+
+  <section class="section values" aria-labelledby="values-title">
+    <div class="container">
+      <SectionHead id="values-title">{values.headline}</SectionHead>
+      <ul class="values-grid">
+        {values.items.map((v, i) => (
+          <InfoCard as="li" title={v.title} text={v.text} n={i + 1} icon={v.icon} tone={i === 0 ? "coral" : i === 2 ? "ink" : "cream"} />
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <FinalCta copy={finalCta} />
+</Base>
+
+<style>
+  .about-hero-art { display: grid; place-items: center; }
+  .about-hero-art img { width: min(100%, 30rem); height: auto; }
+
+  /* single charcoal tape, tilted like the home value strip */
+  .pf-line { position: relative; z-index: 2; overflow: clip; padding-block: 1.5rem; margin-top: -2rem; }
+  .pf-band {
+    width: 110%; margin-inline-start: -5%; padding-block: 0.9rem;
+    background: var(--ink); color: #fff; rotate: -1.6deg;
+    font-family: var(--font-head); font-weight: 700; font-size: clamp(1.3rem, 2vw, 2.4rem); line-height: 1.4;
+  }
+  .pf-band :global(.marquee-sep) { color: var(--coral); margin-inline: 1em; }
+
+  .about-intro { background: var(--paper); }
+  .intro-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 6rem); align-items: center; }
+  .intro-copy { display: grid; gap: 1.25rem; }
+  .intro-p { max-width: 42rem; }
+  .brand-card {
+    position: relative; display: grid; justify-items: center; gap: 1.5rem;
+    padding: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 3vw, 3rem);
+    border-radius: var(--radius-lg); background: var(--ink); color: var(--muted-2);
+    rotate: -2deg;
+  }
+  .brand-logo { width: min(100%, 22rem); height: auto; }
+  .brand-card figcaption { text-align: center; }
+  .brand-sparkle { position: absolute; top: -1.2rem; inset-inline-start: -1rem; width: 3rem; height: auto; }
+
+  .about-why { background: var(--cream); }
+  .why-pair { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: clamp(1rem, 2vw, 2rem); align-items: stretch; margin-top: clamp(2.5rem, 3.5vw, 4rem); }
+  .why-block { position: relative; display: grid; align-content: start; gap: 1rem; padding: clamp(1.75rem, 3vw, 3.5rem); border-radius: var(--radius-lg); }
+  .is-problem { background: var(--sand); color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+  .is-answer { background: var(--coral); color: #fff; }
+  .why-label { font-weight: 600; }
+  .why-label::before { content: "( "; color: var(--coral); }
+  .why-label::after { content: " )"; color: var(--coral); }
+  .is-answer .why-label::before, .is-answer .why-label::after { color: var(--ink); }
+  .why-text { font-size: clamp(1.1rem, 1.35vw, 1.5rem); line-height: 1.8; font-weight: 500; }
+  .is-problem .why-text { font-weight: 400; }
+  .why-cursor { position: absolute; bottom: 1.25rem; inset-inline-start: 1.5rem; width: 3rem; height: auto; opacity: 0.9; }
+  .is-answer .why-text { padding-bottom: 3rem; }
+  .why-arrow { align-self: center; display: grid; place-items: center; width: 3.25rem; height: 3.25rem; border-radius: 50%; background: var(--ink); color: #fff; }
+  .why-arrow :global(.icon) { width: 1.6rem; height: 1.6rem; }
+
+  .mission { background: var(--ink); color: #fff; overflow: clip; }
+  .mission-inner { position: relative; }
+  .mission :global(.h2) { max-width: 58rem; font-size: clamp(1.9rem, 3.4vw, 4rem); line-height: 1.4; }
+  .mission :global(.eyebrow) { font-size: 1.1rem; }
+  .mission-circle { position: absolute; z-index: 0; top: -0.55rem; left: 50%; translate: -50% 0; width: 7.5rem; height: auto; opacity: 0.9; pointer-events: none; }
+
+  .values { background: var(--paper); }
+  .values-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.9rem, 1.2vw, 1.4rem); margin-top: clamp(2rem, 3vw, 3.5rem); }
+  .values-grid :global(.icard) { min-height: 19rem; }
+  .values-grid :global(.icard-title) { margin-top: auto; }
+
+  @media (max-width: 1100px) {
+    .values-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .intro-grid { grid-template-columns: minmax(0, 1fr); }
+    .brand-card { rotate: -1deg; }
+    .why-pair { grid-template-columns: minmax(0, 1fr); }
+    .why-arrow { justify-self: center; rotate: -90deg; }
+  }
+  @media (max-width: 560px) {
+    .values-grid { grid-template-columns: minmax(0, 1fr); }
+    .values-grid :global(.icard) { min-height: 0; }
+  }
+</style>

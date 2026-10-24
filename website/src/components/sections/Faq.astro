@@ -1,16 +1,22 @@
 ---
 import SectionHead from "../ui/SectionHead.astro";
-import { faqs } from "../../data/home";
+import { faqs as homeFaqs } from "../../data/home";
+
+type Item = { q: string; a: string; todo?: boolean };
+interface Props { eyebrow?: string; headline?: string; items?: Item[] }
+const { eyebrow = homeFaqs.eyebrow, headline = homeFaqs.headline } = Astro.props;
+// items flagged `todo` have no approved answer yet (see data/pricing.ts) and stay hidden
+const items = (Astro.props.items ?? homeFaqs.items).filter((f: Item) => !f.todo);
 ---
 <section class="section faq" id="faq" aria-labelledby="faq-title">
   <div class="container faq-grid">
     <div class="faq-side">
-      <SectionHead eyebrow={faqs.eyebrow} id="faq-title">{faqs.headline}</SectionHead>
+      <SectionHead eyebrow={eyebrow} id="faq-title">{headline}</SectionHead>
       <img class="faq-art" src="/art/illus-faq.svg" alt="" width="297" height="311" loading="lazy" data-reveal />
     </div>
 
     <div class="faq-list" data-accordion>
-      {faqs.items.map((f, i) => (
+      {items.map((f, i) => (
         <div class="faq-item" data-acc-item data-reveal>
           <h3 class="faq-q">
             <button type="button" class="faq-btn" aria-expanded="false" aria-controls={`faq-a-${i}`} id={`faq-q-${i}`} data-acc-btn>

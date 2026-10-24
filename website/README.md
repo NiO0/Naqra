@@ -1,4 +1,4 @@
-# Naqra — website (home page)
+# Naqra — website
 
 Arabic, RTL marketing site for **نقرة / Naqra**. Built from the brand book
 (`Naqra Branding files.zip`) and the copy in `Naqra _ Website Content.md`.
@@ -28,14 +28,19 @@ npm run preview    # serve the built site
 
 ```
 src/
-  data/home.ts            ← ALL home-page copy and links (edit text here)
+  data/home.ts            ← home-page copy, routes, nav & footer links
+  data/<page>.ts          ← copy for each inner page (features, how-it-works, solutions, pricing,
+                            about, contact, legal) — edit text here, not in the markup
   styles/global.css       ← design tokens (colours, type scale, spacing), buttons, fonts
   layouts/Base.astro      ← <html dir="rtl">, meta, header/footer, intro
   components/
     brand/                ← Logo, Arrow (cursor + sparks), Wordmark — vector paths from "Naqra 2.ai"
-    sections/             ← one file per home-page section, in page order
+    sections/             ← home-page sections (FinalCta, Faq, HowItWorks take props and are reused),
+                            plus PageHero for the inner pages
+    features/             ← Features page: sticky jump line, section block, one visual per feature
+    legal/                ← shared Privacy / Terms layout
     mock/                 ← product UI mock-ups (dashboard, product thumbnails)
-    ui/                   ← Button, Icon (hand-drawn set), Scribble, Marquee, SectionHead
+    ui/                   ← Button, Icon (hand-drawn set), Scribble, Marquee, SectionHead, InfoCard
   scripts/                ← one module per behaviour (hero, dashboard, tabs, journey…), wired in main.ts
 public/
   fonts/                  ← subset WOFF2 files generated from /fonts
@@ -57,7 +62,10 @@ public/
 
 - Swap the typographic Salla / Shopify marks in `sections/Platforms.astro` for their official logo SVGs.
 - Add the phone / WhatsApp number in `data/home.ts` (`footer.phone`) and real social links.
-- Links to `/features`, `/how-it-works`, `/solutions`, `/pricing`, `/about`, `/contact`, `/privacy`,
-  `/terms` point at pages that don't exist yet.
+- Search the code for `TODO(` — every gap in the content doc is marked in `src/data/*.ts`
+  (annual discount, unconfirmed plan figures, pending FAQ answers, support channels / hours,
+  legal text, WhatsApp number). Privacy and Terms stay `noindex` until their text is added.
+- Contact form: validation only — wire a backend in `src/scripts/contact-form.ts` (`TODO(backend)`).
+- `/en` (English) is not built yet.
 - Confirm the Zanjabeel licence covers web embedding.
 - Dashboard numbers and before/after examples are illustrative UI, not performance claims.

@@ -1,0 +1,104 @@
+---
+// Meta tags visual: an illustrative search result built from the product's meta title & description,
+// plus a small bulk list where every product gets its meta written. Generic search UI, no brand.
+import Icon from "../ui/Icon.astro";
+interface Props { serp: { label: string; url: string; title: string; desc: string } }
+const { serp } = Astro.props;
+const rows = ["bottle", "tshirt", "bag"];
+---
+<div class="serp-wrap" data-inview>
+  <figure class="serp">
+    <div class="serp-search" aria-hidden="true">
+      <Icon name="page" class="serp-glass" />
+      <span>قارورة مياه ستانلس</span>
+    </div>
+    <div class="serp-ghost" aria-hidden="true"><i style="--w:38%"></i><i style="--w:72%"></i><i style="--w:60%"></i></div>
+    <div class="serp-hit">
+      <p class="serp-url mono">{serp.url}</p>
+      <p class="serp-title"><span class="serp-tag mono" aria-hidden="true">meta title</span>{serp.title}</p>
+      <p class="serp-desc"><span class="serp-tag mono" aria-hidden="true">meta description</span>{serp.desc}</p>
+    </div>
+    <div class="serp-ghost" aria-hidden="true"><i style="--w:30%"></i><i style="--w:66%"></i><i style="--w:52%"></i></div>
+    <figcaption class="serp-cap"><span class="chip">{serp.label}</span></figcaption>
+  </figure>
+
+  <div class="bulk" aria-hidden="true">
+    <p class="bulk-head mono">BULK · META</p>
+    {rows.map((k, n) => (
+      <div class="bulk-row" style={`--n:${n}`}>
+        <img src={`/art/thumb-${k}.svg`} alt="" width="34" height="34" />
+        <span class="bulk-lines"><i></i><i></i></span>
+        <span class="bulk-ok"><img src="/art/how-check-white.svg" alt="" width="12" height="12" /></span>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .serp-wrap { position: relative; padding-bottom: clamp(3rem, 5vw, 5rem); }
+  .serp {
+    display: grid; gap: 1.1rem;
+    padding: clamp(1.1rem, 1.7vw, 2rem); border-radius: var(--radius-lg);
+    background: #fff; box-shadow: inset 0 0 0 1px var(--line), 0 40px 80px -50px rgb(125 38 20 / 0.35);
+  }
+  .serp-search {
+    display: flex; align-items: center; gap: 0.6rem;
+    padding: 0.7rem 1.1rem; border-radius: 999px;
+    background: var(--cream); box-shadow: inset 0 0 0 1px var(--line);
+    font-size: 0.95rem; color: var(--ink);
+  }
+  .serp-glass { width: 20px; height: 20px; color: var(--muted); }
+  .serp-ghost { display: grid; gap: 0.45rem; opacity: 0.6; }
+  .serp-ghost i { display: block; height: 8px; width: var(--w); border-radius: 99px; background: var(--line); }
+
+  .serp-hit {
+    position: relative; display: grid; gap: 0.35rem;
+    padding: 1rem 1.1rem; border-radius: 18px;
+    background: var(--coral-50); box-shadow: inset 0 0 0 1.5px var(--coral);
+  }
+  .serp-url { color: var(--muted); font-size: 0.78rem; }
+  .serp-title { font-size: clamp(1.05rem, 1.2vw, 1.3rem); font-weight: 600; line-height: 1.5; color: #1f3fae; }
+  .serp-desc { font-size: 0.9rem; line-height: 1.75; color: var(--muted); }
+  .serp-title, .serp-desc { position: relative; }
+  .serp-tag {
+    position: absolute; inset-inline-end: -0.5rem; top: -1.35rem;
+    padding: 0.05rem 0.5rem; border-radius: 6px;
+    background: var(--ink); color: #fff; font-size: 0.68rem;
+    rotate: -3deg; opacity: 0; translate: 0 6px;
+    transition: opacity 0.5s, translate 0.6s var(--ease-spring);
+  }
+  .serp-desc .serp-tag { top: auto; bottom: -1.2rem; inset-inline-end: auto; inset-inline-start: 1rem; rotate: 2deg; background: var(--coral-700); transition-delay: 0.25s; }
+  .is-inview .serp-tag { opacity: 1; translate: 0 0; }
+  .serp-cap { justify-self: start; }
+
+  /* bulk card overlapping the result's corner */
+  .bulk {
+    position: absolute; inset-inline-start: clamp(-1rem, -1.5vw, 0rem); bottom: 0;
+    width: min(17rem, 70%); display: grid; gap: 0.55rem;
+    padding: 0.9rem; border-radius: 20px;
+    background: var(--ink); color: #fff; rotate: -2.5deg;
+    box-shadow: 0 30px 50px -30px rgb(0 0 0 / 0.6);
+  }
+  .bulk-head { color: var(--muted-2); font-size: 0.7rem; }
+  .bulk-row { display: grid; grid-template-columns: 34px 1fr 22px; align-items: center; gap: 0.6rem; }
+  .bulk-row > img { width: 34px; height: 34px; }
+  .bulk-lines { display: grid; gap: 0.35rem; }
+  .bulk-lines i { display: block; height: 6px; border-radius: 99px; background: rgb(255 255 255 / 0.18); position: relative; overflow: hidden; }
+  .bulk-lines i:last-child { width: 70%; }
+  .bulk-lines i::after {
+    content: ""; position: absolute; inset: 0; background: var(--coral); border-radius: inherit;
+    transform: scaleX(0); transform-origin: right;
+    transition: transform 0.7s var(--ease-out) calc(var(--n) * 0.35s + 0.3s);
+  }
+  .is-inview .bulk-lines i::after { transform: scaleX(1); }
+  .bulk-ok { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.3); transition: background-color 0.3s calc(var(--n) * 0.35s + 0.9s), box-shadow 0.3s calc(var(--n) * 0.35s + 0.9s); }
+  .bulk-ok img { transform: scale(0); transition: transform 0.4s var(--ease-spring) calc(var(--n) * 0.35s + 0.95s); }
+  .is-inview .bulk-ok { background: var(--ok); box-shadow: none; }
+  .is-inview .bulk-ok img { transform: scale(1); }
+
+  @media (max-width: 560px) {
+    .serp-tag { display: none; }
+    .bulk { position: relative; inset: auto; width: 100%; margin-top: -1.5rem; rotate: -1.5deg; }
+    .serp-wrap { padding-bottom: 0; }
+  }
+</style>

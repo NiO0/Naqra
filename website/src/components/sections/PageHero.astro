@@ -1,0 +1,111 @@
+---
+// Hero for the inner pages: eyebrow + Cascadia Mono h1 (last phrase in coral with the hand-drawn
+// underline) + intro + CTAs, on the home hero's paper wash and notebook rules.
+// Put a product visual / illustration in the "visual" slot to get the two-column layout.
+import Button from "../ui/Button.astro";
+
+type Link = { label: string; href: string };
+interface Props {
+  eyebrow: string;
+  title: { before: string; mark: string };
+  sub?: string;
+  primary?: Link;
+  secondary?: Link;
+  jumps?: Link[]; // small in-page jump links under the CTAs
+  compact?: boolean; // shorter hero (pricing, legal)
+}
+const { eyebrow, title, sub, primary, secondary, jumps, compact = false } = Astro.props;
+const hasVisual = Astro.slots.has("visual");
+---
+<section class:list={["phero", hasVisual && "has-visual", compact && "is-compact"]} aria-labelledby="page-title">
+  <div class="container ph-grid">
+    <div class="ph-copy">
+      <p class="eyebrow" data-reveal="fade"><span>{eyebrow}</span></p>
+      <h1 class="ph-title" id="page-title">
+        {title.before && <><span data-split>{title.before}</span>{" "}</>}
+        <span class="ph-mark"><span data-split>{title.mark}</span><img class="ph-underline" src="/art/doodle-underline.svg" alt="" width="648" height="26" /></span>
+      </h1>
+      {sub && <p class="ph-sub" data-reveal>{sub}</p>}
+      {(primary || secondary) && (
+        <div class="ph-ctas" data-reveal>
+          {primary && <Button href={primary.href}>{primary.label}</Button>}
+          {secondary && <Button href={secondary.href} variant="ghost" class="ph-ghost">{secondary.label}</Button>}
+        </div>
+      )}
+      {jumps && (
+        <ul class="ph-jumps" data-reveal>
+          {jumps.map((j) => <li><a href={j.href}>{j.label}</a></li>)}
+        </ul>
+      )}
+      <slot name="after" />
+    </div>
+    {hasVisual && <div class="ph-visual" data-reveal><slot name="visual" /></div>}
+  </div>
+  <img class="ph-sparks" src="/art/hero-sparks.svg" alt="" width="90" height="70" aria-hidden="true" />
+</section>
+
+<style>
+  .phero {
+    position: relative; overflow: clip;
+    padding-top: calc(clamp(3.6rem, 4.17vw, 5rem) + clamp(4.5rem, 8vw, 9rem)); /* header pill + air */
+    padding-bottom: clamp(3.5rem, 6vw, 7rem);
+    background:
+      radial-gradient(37% 62% at 92% 30%, rgb(255 255 255 / 0.9), transparent 70%),
+      radial-gradient(42% 70% at 9% 100%, rgb(255 255 255 / 0.9), transparent 70%),
+      linear-gradient(to bottom, var(--cream) 83%, var(--paper));
+  }
+  /* notebook rules (68px apart, like the home headline), fading out towards the bottom */
+  .phero::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, transparent 0 67px, rgb(53 53 53 / 0.07) 67px 68px);
+    mask-image: linear-gradient(to bottom, #000 30%, transparent 92%);
+  }
+  .phero.is-compact { padding-bottom: clamp(2.5rem, 4vw, 4.5rem); }
+
+  .ph-grid { position: relative; z-index: 1; display: grid; gap: clamp(2.5rem, 4vw, 5rem); align-items: center; }
+  .has-visual .ph-grid { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+  .ph-copy { display: grid; justify-items: start; gap: clamp(1rem, 1.4vw, 1.5rem); max-width: 62rem; }
+
+  /* Cascadia Mono, between the home hero (120) and section headlines (56) */
+  .ph-title {
+    font-family: var(--font-head); font-weight: 600;
+    font-size: clamp(2.1rem, 4.2vw, 5rem); line-height: 1.32; letter-spacing: -0.01em;
+    color: var(--ink); text-wrap: balance;
+  }
+  .is-compact .ph-title { font-size: clamp(2rem, 3.6vw, 4.25rem); }
+  .has-visual .ph-title { font-size: clamp(2rem, 3.3vw, 4rem); }
+  .ph-mark { position: relative; display: inline-block; color: var(--coral); }
+  .ph-mark > span { position: relative; z-index: 1; }
+  .ph-underline { position: absolute; inset-inline: 0; bottom: -0.12em; width: 100%; height: 0.32em; }
+
+  .ph-sub { max-width: 46rem; font-size: var(--fs-lead); line-height: 2; font-weight: 300; color: var(--ink); }
+  .ph-ctas { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 0.5rem; }
+  .ph-ghost { --btn-border: 1px; }
+
+  .ph-jumps { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; font-size: 0.9375rem; font-weight: 500; color: var(--heading); }
+  .ph-jumps a { display: inline-flex; align-items: center; gap: 0.35em; transition: color 0.3s; }
+  .ph-jumps a::before { content: "("; color: var(--coral); }
+  .ph-jumps a::after { content: ")"; color: var(--coral); }
+  .ph-jumps a:hover { color: var(--coral-700); }
+
+  .ph-visual { position: relative; min-width: 0; }
+
+  .ph-sparks {
+    position: absolute; z-index: 0; width: clamp(3rem, 5vw, 5.6rem); height: auto;
+    inset-inline-end: clamp(1rem, 6vw, 8rem); top: calc(clamp(3.6rem, 4.17vw, 5rem) + clamp(2rem, 4vw, 4rem));
+    transform: scaleX(-1) rotate(-12deg); opacity: 0.9;
+  }
+  .has-visual .ph-sparks { display: none; }
+
+  @media (max-width: 960px) {
+    .has-visual .ph-grid { grid-template-columns: minmax(0, 1fr); }
+    .ph-sparks { display: none; }
+  }
+  @media (max-width: 640px) {
+    .ph-ctas { width: 100%; }
+    .ph-ctas :global(.btn) { flex: 1 1 100%; }
+    /* the coral phrase may wrap here, so it drops the single-line underline */
+    .ph-mark { display: inline; }
+    .ph-underline { display: none; }
+  }
+</style>

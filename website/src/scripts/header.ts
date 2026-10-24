@@ -13,6 +13,8 @@ export function initHeader() {
       const y = self.scroll();
       if (y > 480 && self.direction === 1) header.classList.add("is-hidden");
       else if (self.direction === -1) header.classList.remove("is-hidden");
+      // lets sticky bars (Features page jump line) slide up into the header's place
+      document.documentElement.classList.toggle("hdr-hidden", header.classList.contains("is-hidden"));
     },
   });
 

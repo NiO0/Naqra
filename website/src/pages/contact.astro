@@ -1,0 +1,234 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/sections/PageHero.astro";
+import FinalCta from "../components/sections/FinalCta.astro";
+import Icon from "../components/ui/Icon.astro";
+import { meta, hero, tabs, form, direct, finalCta } from "../data/contact";
+
+const f = form.fields;
+const directItems = [direct.channels, direct.hours].filter((d) => d.value);
+---
+<Base title={meta.title} description={meta.description}>
+  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} compact>
+    <div slot="visual" class="contact-art" aria-hidden="true">
+      <img src="/art/illus-faq.svg" alt="" width="297" height="311" />
+    </div>
+  </PageHero>
+
+  <section class="section contact" aria-label={tabs.form}>
+    <div class="container" data-tabs>
+      <div class="ct-tablist" role="tablist" aria-label={`${tabs.form} / ${tabs.direct}`} data-tabs-anchor>
+        <button type="button" role="tab" id="tab-ct-form" aria-controls="ct-form" aria-selected="true" class="ct-tab">
+          <Icon name="text" /> {tabs.form}
+        </button>
+        <span class="ct-or" aria-hidden="true">{tabs.or}</span>
+        <button type="button" role="tab" id="tab-ct-direct" aria-controls="ct-direct" aria-selected="false" tabindex="-1" class="ct-tab">
+          <Icon name="mail" /> {tabs.direct}
+        </button>
+      </div>
+
+      <!-- Form -->
+      <div class="ct-panel" role="tabpanel" id="ct-form" aria-labelledby="tab-ct-form">
+        <form class="ct-form" data-contact-form data-messages={JSON.stringify({ ...form.errors, pending: form.pending })} action="#" method="post">
+          <header class="ct-form-head" data-tab-in>
+            <h2 class="ct-title">{form.title}</h2>
+            <p class="ct-intro">{form.intro}</p>
+            <p class="ct-note">{form.requiredNote}</p>
+          </header>
+
+          <div class="ct-grid" data-tab-in>
+            <div class="ct-field" data-field>
+              <label for="ct-name">{f.name.label} {f.name.required && <span class="req" aria-hidden="true">*</span>}</label>
+              <input id="ct-name" name="name" type="text" autocomplete="name" placeholder={f.name.placeholder} required={f.name.required} aria-describedby="ct-name-err" />
+              <p class="ct-err" id="ct-name-err" data-error aria-live="polite"></p>
+            </div>
+            <div class="ct-field" data-field>
+              <label for="ct-email">{f.email.label} {f.email.required && <span class="req" aria-hidden="true">*</span>}</label>
+              <input id="ct-email" name="email" type="email" autocomplete="email" inputmode="email" dir="ltr" placeholder={f.email.placeholder} required={f.email.required} aria-describedby="ct-email-err" />
+              <p class="ct-err" id="ct-email-err" data-error aria-live="polite"></p>
+            </div>
+            <div class="ct-field" data-field>
+              <label for="ct-company">{f.company.label} {f.company.required && <span class="req" aria-hidden="true">*</span>}</label>
+              <input id="ct-company" name="company" type="text" autocomplete="organization" placeholder={f.company.placeholder} required={f.company.required} aria-describedby="ct-company-err" />
+              <p class="ct-err" id="ct-company-err" data-error aria-live="polite"></p>
+            </div>
+            <div class="ct-field" data-field>
+              <label for="ct-inquiry">{f.inquiry.label} {f.inquiry.required && <span class="req" aria-hidden="true">*</span>}</label>
+              <div class="ct-select">
+                <select id="ct-inquiry" name="inquiry" required={f.inquiry.required} aria-describedby="ct-inquiry-err">
+                  <option value="" selected disabled>{f.inquiry.placeholder}</option>
+                  {f.inquiry.options.map((o) => <option value={o}>{o}</option>)}
+                </select>
+                <Icon name="chevron" class="ct-chev" />
+              </div>
+              <p class="ct-err" id="ct-inquiry-err" data-error aria-live="polite"></p>
+            </div>
+
+            <fieldset class="ct-field ct-wide" data-field aria-describedby="ct-platform-err">
+              <legend>{f.platform.label} {f.platform.required && <span class="req" aria-hidden="true">*</span>}</legend>
+              <div class="ct-pills">
+                {f.platform.options.map((o, i) => (
+                  <label class="ct-pill">
+                    <input type="radio" name="platform" value={o} required={f.platform.required && i === 0} />
+                    <span>{o}</span>
+                  </label>
+                ))}
+              </div>
+              <p class="ct-err" id="ct-platform-err" data-error aria-live="polite"></p>
+            </fieldset>
+
+            <div class="ct-field ct-wide" data-field>
+              <label for="ct-message">{f.message.label} {f.message.required && <span class="req" aria-hidden="true">*</span>}</label>
+              <textarea id="ct-message" name="message" rows="6" placeholder={f.message.placeholder} required={f.message.required} aria-describedby="ct-message-err"></textarea>
+              <p class="ct-err" id="ct-message-err" data-error aria-live="polite"></p>
+            </div>
+          </div>
+
+          <div class="ct-actions" data-tab-in>
+            <button type="submit" class="btn btn--coral ct-submit">
+              <span class="btn-label">{form.submit} <Icon name="arrowStart" class="ct-send" /></span>
+            </button>
+            <p class="ct-status" data-form-status role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Direct contact -->
+      <div class="ct-panel" role="tabpanel" id="ct-direct" aria-labelledby="tab-ct-direct">
+        <div class="ct-direct">
+          <h2 class="ct-title" data-tab-in>{direct.title}</h2>
+          <ul class="ct-cards" data-tab-in>
+            <li>
+              <a class="ct-card is-mail" href={`mailto:${direct.email.value}`}>
+                <span class="ct-card-ico"><Icon name="mail" /></span>
+                <span class="ct-card-k">{direct.email.label}</span>
+                <span class="ct-card-v mono">{direct.email.value.toLowerCase()}</span>
+              </a>
+            </li>
+            {directItems.map((d) => (
+              <li><div class="ct-card"><span class="ct-card-k">{d.label}</span><span class="ct-card-v">{d.value}</span></div></li>
+            ))}
+            <li>
+              <div class="ct-card">
+                <span class="ct-card-k">{direct.socialsLabel}</span>
+                <ul class="ct-socials">
+                  {direct.socials.map((s) => (
+                    <li><a href={s.href} aria-label={s.name}><Icon name={s.icon} /></a></li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <FinalCta copy={finalCta} />
+</Base>
+
+<style>
+  .contact-art { display: grid; place-items: center; }
+  .contact-art img { width: min(100%, 17rem); height: auto; }
+
+  .contact { background: var(--paper); padding-top: clamp(2rem, 4vw, 4.5rem); }
+  .ct-tablist { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: clamp(2rem, 3vw, 3rem); }
+  :global(html:not(.js)) .ct-tablist { display: none; }
+  .ct-tab {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.8rem 1.5rem; border-radius: 999px;
+    font-weight: 600; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--ink);
+    transition: background-color 0.35s, color 0.35s;
+  }
+  .ct-tab :global(.icon) { width: 22px; height: 22px; }
+  .ct-tab:hover { background: var(--sand); }
+  .ct-tab[aria-selected="true"] { background: var(--ink); color: #fff; }
+  .ct-or { font-family: var(--font-head); color: var(--muted); }
+
+  .ct-panel { max-width: 62rem; margin-inline: auto; }
+  .ct-panel[hidden] { display: none; }
+  .ct-panel + .ct-panel { margin-top: 2rem; } /* no-JS: both panels stacked */
+
+  .ct-form, .ct-direct {
+    display: grid; gap: 1.75rem;
+    padding: clamp(1.5rem, 3.5vw, 3.5rem); border-radius: var(--radius-lg);
+    background: var(--cream); box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .ct-form-head { display: grid; gap: 0.35rem; }
+  .ct-title { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.5rem, 2.2vw, 2.4rem); line-height: 1.35; }
+  .ct-intro { color: var(--muted); font-size: var(--fs-lead); }
+  .ct-note { font-size: 0.85rem; color: var(--muted); }
+
+  .ct-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 1.5rem; }
+  .ct-field { display: grid; gap: 0.45rem; align-content: start; min-width: 0; border: 0; padding: 0; margin: 0; }
+  .ct-wide { grid-column: 1 / -1; }
+  .ct-field label, .ct-field legend { font-weight: 600; font-size: 0.95rem; color: var(--heading); padding: 0; }
+  .ct-field legend { margin-bottom: 0.45rem; }
+  .req { color: var(--coral-700); }
+  .ct-field input:not([type="radio"]), .ct-field select, .ct-field textarea {
+    width: 100%; padding: 0.9rem 1.1rem; border: 0; border-radius: 16px;
+    background: #fff; box-shadow: inset 0 0 0 1.5px var(--line);
+    font-size: 1rem; line-height: 1.6; color: var(--ink);
+    transition: box-shadow 0.25s;
+  }
+  .ct-field input[dir="ltr"] { text-align: right; }
+  .ct-field input[dir="ltr"]::placeholder { direction: rtl; }
+  .ct-field textarea { resize: vertical; min-height: 9rem; }
+  .ct-field ::placeholder { color: var(--muted-2); }
+  .ct-field input:focus, .ct-field select:focus, .ct-field textarea:focus { outline: none; box-shadow: inset 0 0 0 2px var(--coral); }
+  .ct-select { position: relative; }
+  .ct-select select { appearance: none; padding-inline-start: 2.75rem; cursor: inherit; }
+  .ct-select select:invalid { color: var(--muted-2); }
+  .ct-select option { color: var(--ink); }
+  .ct-chev { position: absolute; inset-inline-start: 0.9rem; top: 50%; width: 22px; height: 22px; margin-top: -11px; pointer-events: none; color: var(--muted); }
+
+  .ct-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .ct-pill { position: relative; }
+  .ct-pill input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: inherit; }
+  .ct-pill span {
+    display: inline-flex; padding: 0.65rem 1.4rem; border-radius: 999px;
+    background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); font-weight: 500;
+    transition: background-color 0.25s, color 0.25s, box-shadow 0.25s;
+  }
+  .ct-pill input:checked + span { background: var(--coral); color: #fff; box-shadow: none; }
+  .ct-pill input:focus-visible + span { outline: 2.5px solid var(--coral); outline-offset: 3px; }
+
+  .ct-err { min-height: 1.2em; font-size: 0.85rem; line-height: 1.4; color: var(--coral-700); }
+  .has-error input:not([type="radio"]), .has-error select, .has-error textarea { box-shadow: inset 0 0 0 2px var(--coral-700); }
+  .has-error .ct-pill span { box-shadow: inset 0 0 0 1.5px var(--coral-700); }
+
+  .ct-actions { display: flex; align-items: center; gap: 1rem 1.5rem; flex-wrap: wrap; }
+  .ct-send { width: 22px; height: 22px; }
+  .ct-status { flex: 1 1 18rem; font-size: 0.95rem; color: var(--ok); }
+  .ct-status.is-error { color: var(--coral-700); }
+
+  .ct-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .ct-card {
+    display: grid; gap: 0.5rem; height: 100%;
+    padding: 1.5rem; border-radius: 24px; background: #fff; box-shadow: inset 0 0 0 1px var(--line);
+    transition: translate 0.4s var(--ease-out);
+  }
+  .ct-card.is-mail { background: var(--coral); color: #fff; box-shadow: none; }
+  a.ct-card:hover { translate: 0 -4px; }
+  .ct-card-ico { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: rgb(255 255 255 / 0.2); }
+  .ct-card-ico :global(.icon) { width: 28px; height: 28px; }
+  .ct-card-k { font-weight: 600; font-size: 0.9rem; opacity: 0.85; }
+  .ct-card-v { font-size: clamp(1rem, 1.3vw, 1.3rem); font-weight: 600; overflow-wrap: anywhere; }
+  .ct-socials { display: flex; gap: 0.6rem; }
+  .ct-socials a {
+    display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%;
+    background: var(--cream); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line);
+    transition: background-color 0.3s, color 0.3s, transform 0.5s var(--ease-spring);
+  }
+  .ct-socials a:hover { background: var(--coral); color: #fff; transform: translateY(-3px) rotate(-8deg); }
+  .ct-socials :global(.icon) { width: 24px; height: 24px; }
+
+  @media (max-width: 960px) {
+    .contact-art { display: none; }
+  }
+  @media (max-width: 640px) {
+    .ct-grid, .ct-cards { grid-template-columns: minmax(0, 1fr); }
+    .ct-tab { padding: 0.7rem 1.1rem; font-size: 0.92rem; }
+    .ct-submit { width: 100%; }
+  }
+</style>
