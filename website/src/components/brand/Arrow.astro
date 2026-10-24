@@ -1,0 +1,21 @@
+---
+// The hand-drawn Naqra cursor (from the brand master file), with its three "click" sparks
+// as separate paths so they can be animated independently.
+import data from "./arrow-paths.json";
+interface Props { class?: string; sparks?: boolean }
+const { class: cls = "", sparks = true } = Astro.props;
+// Each spark bursts out from the end nearest the arrow tip
+const origins = ["0% 100%", "0% 35%", "60% 100%"];
+---
+<svg class:list={["arrow-mark", cls]} viewBox={data.viewBox} aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <path class="am-body" transform={`matrix(${data.body.mt})`} d={data.body.d} />
+  {sparks && data.sparks.map((s, i) => (
+    <g class="spark" data-origin={origins[i]} style={`transform-origin:${origins[i]}`}>
+      <path transform={`matrix(${s.mt})`} d={s.d} />
+    </g>
+  ))}
+</svg>
+<style>
+  .arrow-mark { overflow: visible; fill: var(--arrow-fill, currentColor); }
+  .arrow-mark :global(.spark) { fill: var(--spark-fill, var(--arrow-fill, currentColor)); transform-box: fill-box; }
+</style>

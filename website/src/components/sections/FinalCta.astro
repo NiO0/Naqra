@@ -1,0 +1,67 @@
+---
+import Button from "../ui/Button.astro";
+import { finalCta } from "../../data/home";
+---
+<section class="final" id="start" data-theme="coral" aria-labelledby="final-title" data-final>
+  <div class="container final-inner">
+    <div class="final-copy">
+      <h2 class="final-title" id="final-title">
+        <span class="final-line" data-split>{finalCta.headline.before}</span>
+        <span class="final-mark"><span data-split>{finalCta.headline.mark}</span><img class="final-underline" src="/art/doodle-underline.svg" alt="" width="648" height="26" /></span>
+      </h2>
+      <p class="final-text" data-reveal>{finalCta.text}</p>
+      <div class="final-ctas" data-reveal>
+        <Button href={finalCta.primary.href} variant="light">{finalCta.primary.label}</Button>
+        <Button href={finalCta.secondary.href} variant="ghost">{finalCta.secondary.label}</Button>
+      </div>
+    </div>
+
+    <div class="final-art" aria-hidden="true">
+      <img class="final-burst" src="/art/illus-final.svg" alt="" width="614" height="403" loading="lazy" />
+      <img class="final-cursor" src="/art/brand-cursor.svg" alt="" width="207" height="215" data-final-cursor />
+    </div>
+  </div>
+</section>
+
+<style>
+  .final {
+    position: relative; overflow: clip;
+    background: var(--coral); color: #fff;
+    padding-block: clamp(3.5rem, 3.9vw, 4.7rem); /* 75 */
+  }
+  .final-inner { position: relative; }
+  .final-copy {
+    position: relative; z-index: 1;
+    display: grid; justify-items: start; gap: 1.625rem;
+    max-width: min(65rem, calc(100% - clamp(12rem, 26vw, 31rem)));
+  }
+  /* Cascadia Mono Bold 64 / 1.35 */
+  .final-title {
+    display: grid; justify-items: start; gap: clamp(0.75rem, 1.6vw, 1.9rem);
+    font-family: var(--font-head); font-weight: 700;
+    font-size: clamp(2rem, 3.33vw, 4rem); line-height: 1.35;
+    text-wrap: wrap;
+  }
+  .final-mark { position: relative; display: inline-block; white-space: nowrap; }
+  .final-mark > span { position: relative; z-index: 1; }
+  .final-underline { position: absolute; left: 4%; right: 0; bottom: -0.2em; width: 96%; height: 0.41em; }
+  .final-text { font-size: var(--fs-lead); line-height: 1.7; max-width: 38.75rem; } /* 620 */
+  .final-ctas { display: flex; flex-wrap: wrap; gap: 0.875rem; }
+
+  /* Burst doodles with the white brand cursor in the middle (Illustration / final) */
+  .final-art {
+    position: absolute; z-index: 0;
+    inset-inline-end: clamp(-1rem, 1.1vw, 1.3rem); top: 50%; translate: 0 -50%;
+    width: clamp(16rem, 34.7vw, 41.7rem); aspect-ratio: 667 / 462;
+  }
+  .final-burst { position: absolute; left: 7.07%; top: 5%; width: 91.6%; height: auto; }
+  .final-cursor { position: absolute; left: 35.96%; top: 28.33%; width: 30.96%; height: auto; transform-origin: 76% 22%; }
+
+  @media (max-width: 860px) {
+    .final { padding-bottom: clamp(16rem, 62vw, 22rem); }
+    .final-inner { position: static; } /* the art anchors to the section's bottom */
+    .final-copy { max-width: none; }
+    .final-mark { white-space: normal; }
+    .final-art { top: auto; bottom: 1.5rem; translate: none; inset-inline-end: 50%; margin-inline-end: calc(clamp(16rem, 70vw, 24rem) / -2); width: clamp(16rem, 70vw, 24rem); }
+  }
+</style>

@@ -1,0 +1,29 @@
+---
+// Infinite marquee. Content is duplicated so the loop is seamless; JS (scripts/marquee.ts)
+// drives it and links its speed to scroll velocity. Falls back to a CSS animation.
+interface Props { items: string[]; class?: string; speed?: number; reverse?: boolean; separator?: string; ltr?: boolean }
+const { items, class: cls = "", speed = 1, reverse = false, separator = "✳", ltr = false } = Astro.props;
+---
+<div class:list={["marquee", cls]} data-marquee data-speed={speed} data-reverse={reverse ? "" : undefined} dir={ltr ? "ltr" : undefined}>
+  <div class="marquee-track">
+    {[0, 1].map((n) => (
+      <div class="marquee-group" aria-hidden={n === 1 ? "true" : undefined}>
+        {items.map((t) => (
+          <span class="marquee-item">
+            <span>{t}</span>
+            <span class="marquee-sep" aria-hidden="true">{separator}</span>
+          </span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+<style>
+  .marquee { overflow: hidden; display: flex; user-select: none; }
+  .marquee-track { display: flex; flex: none; width: max-content; will-change: transform; }
+  .marquee-group { display: flex; flex: none; }
+  .marquee-item { display: inline-flex; align-items: center; white-space: nowrap; }
+  .marquee-sep { display: inline-block; margin-inline: 1.1em; opacity: 0.85; }
+  :global(html:not(.js)) .marquee-track { animation: marquee-css 40s linear infinite; }
+  @keyframes marquee-css { to { transform: translateX(50%); } }
+</style>

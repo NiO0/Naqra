@@ -1,0 +1,11 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="176" height="176" viewBox="0 0 176 176" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Thumb/T-shirt" clip-path="url(#clip0_0_143)">
+<path id="Vector" d="M132 0H44C19.6995 0 0 19.6995 0 44V132C0 156.301 19.6995 176 44 176H132C156.301 176 176 156.301 176 132V44C176 19.6995 156.301 0 132 0Z" fill="#FDE4DD"/>
+<path id="Vector_2" d="M63.8 46.2L37.4 62.04L47.52 84.04L60.28 78.32V132H115.72V78.32L128.48 84.04L138.6 62.04L112.2 46.2C108.68 54.56 99.88 60.28 90.2 60.28C80.52 60.28 71.72 54.56 63.8 46.2Z" fill="#F26E53"/>
+</g>
+<defs>
+<clipPath id="clip0_0_143">
+<rect width="176" height="176" fill="white"/>
+</clipPath>
+</defs>
+</svg>

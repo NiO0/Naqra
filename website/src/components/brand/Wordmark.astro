@@ -1,0 +1,16 @@
+---
+// "NAQRA" Latin wordmark, one path per letter (ordered N-A-Q-R-A) for staggered animation.
+import data from "./wordmark-paths.json";
+interface Props { class?: string }
+const { class: cls = "" } = Astro.props;
+const letters = [...data.letters].sort((a, b) => +a.mt.split(",")[4] - +b.mt.split(",")[4]);
+---
+<svg class:list={["wordmark", cls]} viewBox={data.viewBox} role="img" aria-label="NAQRA" xmlns="http://www.w3.org/2000/svg">
+  {letters.map((l) => (
+    <g class="wm-letter"><g class="wm-hover"><path transform={`matrix(${l.mt})`} d={l.d} /></g></g>
+  ))}
+</svg>
+<style>
+  .wordmark { overflow: visible; fill: currentColor; }
+  .wordmark :global(.wm-letter), .wordmark :global(.wm-hover) { transform-box: fill-box; transform-origin: 50% 100%; }
+</style>

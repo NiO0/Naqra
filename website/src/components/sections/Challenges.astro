@@ -1,0 +1,81 @@
+---
+import SectionHead from "../ui/SectionHead.astro";
+import Button from "../ui/Button.astro";
+import { challenges } from "../../data/home";
+---
+<section class="section challenges" id="challenges" aria-labelledby="challenges-title">
+  <div class="container ch-grid">
+    <div class="ch-head">
+      <SectionHead eyebrow={challenges.eyebrow} id="challenges-title">{challenges.headline}</SectionHead>
+    </div>
+
+    <img class="ch-art" src="/art/illus-problems.svg" alt="" width="451" height="474" loading="lazy" data-reveal />
+
+    {challenges.cards.map((c, i) => (
+      <article class="ch-card" style={`grid-area: c${i + 1}`} data-reveal="card">
+        <div class="ch-card-top">
+          <span class="ch-num">{String(i + 1).padStart(2, "0")}</span>
+          <span class="ch-ico"><img src={`/art/icon-${c.icon}.svg`} alt="" width="32" height="32" /></span>
+        </div>
+        <h3 class="ch-title">{c.title}</h3>
+        <p class="ch-text">{c.text}</p>
+      </article>
+    ))}
+
+    <div class="ch-closing" data-reveal>
+      <p class="ch-close-line">{challenges.closing}</p>
+      <Button href={challenges.cta.href}>{challenges.cta.label}</Button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .challenges { background: var(--paper); padding-top: clamp(2.5rem, 5vw, 6rem); }
+
+  /* Staircase of three equal columns (RTL: the first column is the right one) */
+  .ch-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+      "art head head"
+      "art c1   c2"
+      "c3  c4   close";
+    gap: clamp(1rem, 1.3vw, 1.5rem) clamp(1rem, 1.2vw, 1.4rem);
+  }
+  .ch-head { grid-area: head; align-self: start; }
+  .ch-art { grid-area: art; justify-self: center; align-self: start; width: min(100%, 28rem); height: auto; margin-top: -1.5rem; }
+
+  /* Card/Pain: paper, 1px line, radius 32, padding 36 */
+  .ch-card {
+    display: flex; flex-direction: column; gap: 0.75rem;
+    padding: clamp(1.4rem, 1.9vw, 2.25rem);
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .ch-card-top { display: flex; align-items: center; justify-content: space-between; }
+  .ch-num { font-family: var(--font-mono); font-size: clamp(2.25rem, 2.5vw, 3rem); font-weight: 600; line-height: 1.3; color: var(--coral); }
+  .ch-ico {
+    display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%;
+    background: #fff; box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .ch-ico img { width: 32px; height: 32px; }
+  .ch-title { font-size: var(--fs-h3); line-height: 1.5; color: var(--ink); }
+  .ch-text { color: var(--muted); }
+
+  .ch-closing { grid-area: close; align-self: end; justify-self: start; display: grid; justify-items: start; gap: 1.1rem; padding-bottom: 0.1rem; }
+  .ch-close-line { font-family: var(--font-display); font-weight: 600; font-size: var(--fs-lead); line-height: 1.55; color: #1f1f1f; }
+
+  @media (max-width: 1100px) {
+    .ch-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: "head art" "c1 c2" "c3 c4" "close close";
+    }
+    .ch-art { width: min(100%, 18rem); margin-top: 0; }
+    .ch-closing { justify-self: center; justify-items: center; text-align: center; margin-top: 1.5rem; }
+  }
+  @media (max-width: 680px) {
+    .ch-grid { grid-template-columns: minmax(0, 1fr); grid-template-areas: "head" "art" "c1" "c2" "c3" "c4" "close"; }
+    .ch-art { width: min(70%, 15rem); }
+  }
+</style>

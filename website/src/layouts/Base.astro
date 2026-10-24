@@ -1,0 +1,73 @@
+---
+import "@fontsource-variable/alexandria";
+import "../styles/global.css";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Intro from "../components/Intro.astro";
+
+interface Props { title: string; description: string }
+const { title, description } = Astro.props;
+---
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#fff8f5" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/cascadia-mono-arabic-var.woff2" as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ar_SA" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        d.classList.add("js");
+        // ?motion=on forces full motion (handy for reviewing on machines with reduced motion enabled)
+        if (matchMedia("(prefers-reduced-motion: reduce)").matches && !/[?&]motion=on/.test(location.search)) d.classList.add("reduced");
+        try { if (sessionStorage.getItem("naqra-intro")) d.classList.add("intro-seen"); } catch (e) { d.classList.add("intro-seen"); }
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
+    <Intro />
+    <div class="scroll-progress" data-scroll-progress aria-hidden="true"></div>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <script>
+      import "../scripts/main";
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  .skip-link {
+    position: fixed; top: 0.75rem; inset-inline-start: 0.75rem; z-index: 200;
+    padding: 0.6rem 1rem; border-radius: 999px; background: var(--ink); color: #fff;
+    transform: translateY(-200%); transition: transform 0.3s;
+  }
+  .skip-link:focus { transform: none; }
+  .scroll-progress {
+    position: fixed; inset: 0 0 auto; height: 3px; z-index: 60;
+    background: var(--coral); transform-origin: right; transform: scaleX(0);
+    pointer-events: none;
+  }
+  /* Hero content starts hidden only when JS will animate it in (failsafe if it doesn't) */
+  .js:not(.reduced) [data-hero-item],
+  .js:not(.reduced) [data-hero-row],
+  .js:not(.reduced) [data-hero-rule],
+  .js:not(.reduced) [data-hero-visual] { opacity: 0; }
+  .js:not(.reduced):not(.js-ready) [data-hero-item],
+  .js:not(.reduced):not(.js-ready) [data-hero-row],
+  .js:not(.reduced):not(.js-ready) [data-hero-rule],
+  .js:not(.reduced):not(.js-ready) [data-hero-visual],
+  .js:not(.reduced):not(.js-ready) [data-reveal] { animation: failsafe-show 0.5s 3.5s forwards; }
+  @keyframes failsafe-show { to { opacity: 1; } }
+</style>

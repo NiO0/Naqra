@@ -1,0 +1,19 @@
+---
+import Arrow from "../brand/Arrow.astro";
+interface Props {
+  href: string;
+  variant?: "dark" | "light" | "ghost" | "coral";
+  class?: string;
+  icon?: boolean;
+  magnetic?: boolean;
+}
+const { href, variant = "dark", class: cls = "", icon = false, magnetic = true } = Astro.props;
+---
+<a
+  href={href}
+  class:list={["btn", variant !== "dark" && `btn--${variant}`, cls]}
+  data-magnetic={magnetic ? "" : undefined}
+>
+  <span class="btn-label"><slot /></span>
+  {icon && <Arrow class="btn-ico" />}
+</a>

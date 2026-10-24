@@ -1,0 +1,168 @@
+---
+import Button from "../ui/Button.astro";
+import PressButton from "../ui/PressButton.astro";
+import Dashboard from "../mock/Dashboard.astro";
+import { hero } from "../../data/home";
+const { first, stretch, press } = hero.lines;
+---
+<section class="hero" id="top" data-hero>
+  <div class="hero-grid container">
+    <h1 class="hero-title">
+      <span class="sr-only">{hero.title}</span>
+      <span class="ht-rows" aria-hidden="true">
+        <span class="ht-row">
+          <i class="ht-rule" data-hero-rule></i><i class="ht-rule ht-rule--base" data-hero-rule></i>
+          <span class="ht-text" data-hero-row>{first}</span>
+        </span>
+        <span class="ht-row">
+          <i class="ht-rule" data-hero-rule></i><i class="ht-rule ht-rule--base" data-hero-rule></i>
+          <span class="ht-text" data-hero-row>
+            <span class="ht-stretch is-clickable" data-hero-stretch>
+              <span>{stretch.start}</span><span class="hs-kashida" data-kashida><span>{"ـ".repeat(40)}</span></span><span>{stretch.end}</span>
+              <svg class="hs-sparks" viewBox="0 0 60 80" data-stretch-sparks>
+                <g class="spark" data-origin="50% 100%"><path d="M46 37L42.6 7" /></g>
+                <g class="spark" data-origin="100% 100%"><path d="M35.6 46.4L9 35" /></g>
+                <g class="spark" data-origin="100% 0%"><path d="M36 60.4L11 72" /></g>
+              </svg>
+            </span>
+          </span>
+        </span>
+        <span class="ht-row">
+          <i class="ht-rule" data-hero-rule></i><i class="ht-rule ht-rule--base" data-hero-rule></i><i class="ht-rule ht-rule--under" data-hero-rule></i>
+          <span class="ht-text" data-hero-row>
+            {press.before}<span class="ht-press is-clickable" data-hero-press><PressButton /></span>{press.after}
+          </span>
+        </span>
+      </span>
+    </h1>
+
+    <p class="hero-sub" data-hero-item><b>{hero.sub.lead}</b> {hero.sub.rest}</p>
+
+    <div class="hero-actions" data-hero-item>
+      <div class="hero-ctas">
+        <Button href={hero.primary.href}>{hero.primary.label}</Button>
+        <Button href={hero.secondary.href} variant="ghost" class="hero-explore">
+          {hero.secondary.label} <img src="/art/squiggle-down.svg" alt="" width="10" height="33" class="ghost-ico" />
+        </Button>
+      </div>
+      <ul class="hero-micro">
+        {hero.micro.map((m) => <li>{m}</li>)}
+      </ul>
+    </div>
+
+    <div class="hero-visual" data-hero-visual>
+      <Dashboard />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Figma "Main Page" hero: paper → white wash, two soft white glows, ruled notebook lines behind the headline */
+  .hero {
+    position: relative;
+    background:
+      radial-gradient(37% 62% at 92% 30%, rgb(255 255 255 / 0.9), transparent 70%),
+      radial-gradient(42% 70% at 9% 100%, rgb(255 255 255 / 0.9), transparent 70%),
+      linear-gradient(to bottom, var(--cream) 83%, var(--paper));
+    display: grid; align-content: center;
+    min-height: min(100svh, 65rem);
+    padding-top: calc(var(--pill-h, 5rem) + clamp(3rem, 7vw, 8.5rem));
+    padding-bottom: clamp(4rem, 7vw, 8rem);
+    overflow: clip;
+  }
+
+  /* RTL grid: the headline owns the right column, the product the left; copy and CTAs share the row below */
+  .hero-grid {
+    position: relative; z-index: 1;
+    container-type: inline-size;
+    display: grid;
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+    grid-template-areas: "title visual" "sub actions";
+    gap: clamp(2.5rem, 8.7vw, 10.5rem) clamp(1.5rem, 3vw, 4rem);
+    align-items: center;
+  }
+
+  /* Cascadia Mono 120 / 1.13 at the 1620px container */
+  .hero-title {
+    grid-area: title;
+    font-family: var(--font-head);
+    font-size: clamp(2.6rem, 7.4cqi, 7.5rem); font-weight: 445; line-height: 1.13;
+    color: var(--ink);
+    text-wrap: nowrap;
+  }
+  .ht-rows { display: block; }
+  .ht-row { position: relative; display: block; }
+  .ht-text { position: relative; display: inline-block; white-space: nowrap; }
+  /* notebook rules: one every 0.567em (68px at 120px), running across the whole grid behind the dashboard */
+  .ht-rule {
+    position: absolute; inset-inline-start: 0; top: 0.367em;
+    width: 100cqi; height: 1px;
+    background: rgb(53 53 53 / 0.2);
+    transform-origin: right;
+  }
+  .ht-rule--base { top: 0.933em; }
+  .ht-rule--under { top: 1.5em; }
+
+  .ht-stretch { position: relative; display: inline-flex; align-items: baseline; user-select: none; }
+  .hs-kashida {
+    display: inline-block; white-space: nowrap;
+    width: calc((var(--k, 1.6) + var(--k-vel, 0)) * 1em); /* animated + justified by scripts/hero.ts */
+    clip-path: inset(-1em 0 -1em 0); /* clip horizontally only — keeps the baseline intact */
+    margin-inline: -0.02em;
+  }
+  .hs-sparks {
+    position: absolute; inset-inline-start: calc(100% - 0.1em); top: 0.78em;
+    width: 0.56em; overflow: visible;
+    fill: none; stroke: var(--coral-700); stroke-width: 7.5; stroke-linecap: round;
+  }
+  .hs-sparks :global(.spark) { transform-box: fill-box; }
+
+  .ht-press {
+    display: inline-block; vertical-align: -0.34em;
+    width: 1.6em; margin-inline: 0.1em;
+    margin-top: -0.3em; /* the hand rises above the letters without growing the line */
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ht-press :global(.press) { width: 100%; height: auto; }
+
+  /* Alexandria 20 / 2: "أداة ذكية" SemiBold, the rest Light */
+  .hero-sub {
+    grid-area: sub; align-self: start;
+    max-width: 48rem;
+    font-size: var(--fs-lead); line-height: 2; font-weight: 300;
+    color: var(--ink);
+  }
+  .hero-sub b { font-weight: 600; color: var(--heading); }
+
+  .hero-actions { grid-area: actions; align-self: start; display: grid; justify-items: start; gap: 1.8rem; }
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 1.25rem; }
+  .hero-explore { --btn-border: 1px; }
+  .ghost-ico { width: 10px; height: auto; }
+  .hero-micro {
+    display: flex; flex-wrap: wrap; gap: 0.35rem 1.2rem;
+    font-size: 0.875rem; font-weight: 500; line-height: 1.65; color: var(--heading);
+  }
+  .hero-micro li::before, .hero-micro li::after { color: var(--coral); }
+  .hero-micro li::before { content: "("; margin-inline-end: 0.35em; }
+  .hero-micro li::after { content: ")"; margin-inline-start: 0.35em; }
+
+  .hero-visual {
+    grid-area: visual; position: relative; z-index: 2;
+    /* lean into the side gutter on wide screens so the product gets more room */
+    margin-inline-end: calc(-1 * clamp(0px, (100vw - var(--container)) / 2 - 1.5rem, 4.5rem));
+  }
+
+  @media (max-width: 960px) {
+    .hero-grid {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas: "title" "sub" "actions" "visual";
+      gap: 1.75rem;
+    }
+    .hero-title { font-size: clamp(2.3rem, 11.5cqi, 6.4rem); }
+    .hero-visual { margin-top: 1.5rem; }
+  }
+  @media (max-width: 640px) {
+    .hero-ctas { width: 100%; }
+    .hero-ctas :global(.btn) { flex: 1 1 100%; }
+  }
+</style>

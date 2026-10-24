@@ -1,0 +1,226 @@
+---
+import Logo from "./brand/Logo.astro";
+import Icon from "./ui/Icon.astro";
+import Button from "./ui/Button.astro";
+import { nav, routes } from "../data/home";
+---
+<header class="site-header" data-header>
+  <div class="hdr-bar container">
+    <div class="hdr-pill hdr-main">
+    <a href={routes.home} class="hdr-logo" aria-label="نقرة — الصفحة الرئيسية">
+      <Logo class="hdr-logo-svg" />
+    </a>
+
+    <nav class="hdr-nav" aria-label="القائمة الرئيسية">
+      <ul class="hdr-links">
+        <li class="has-mega" data-mega>
+          <button class="nav-link" type="button" aria-expanded="false" aria-controls="mega-features" data-mega-btn>
+            المزايا <Icon name="chevron" class="nav-chev" />
+          </button>
+          <div class="mega" id="mega-features" data-mega-panel>
+            <div class="mega-inner">
+              <p class="mega-title mono">FEATURES / المزايا</p>
+              <ul class="mega-list">
+                {nav.features.map((f) => (
+                  <li>
+                    <a href={f.href} class="mega-item">
+                      <span class="mega-ico"><Icon name={f.icon} /></span>
+                      <span class="mega-label">{f.label}</span>
+                      {f.soon && <span class="chip chip--soon">قريبًا</span>}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <a href={routes.features} class="link-arrow mega-all">
+                كل المزايا <Icon name="arrowStart" size="18" />
+              </a>
+            </div>
+          </div>
+        </li>
+        {nav.links.map((l) => (
+          <li><a class="nav-link" href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+    </div>
+
+    <div class="hdr-pill hdr-actions">
+      <a href={nav.lang.href} class="hdr-lang" lang="en" hreflang="en">{nav.lang.label} <img src="/art/icon-language.svg" alt="" width="24" height="24" /></a>
+      <Button href={nav.cta.href} class="hdr-cta" magnetic={false}>{nav.cta.label}</Button>
+      <button class="hdr-burger" type="button" aria-expanded="false" aria-controls="mobile-menu" data-burger>
+        <span class="sr-only">فتح القائمة</span>
+        <span class="burger-lines" aria-hidden="true"><i></i><i></i></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" data-mobile-menu aria-hidden="true">
+    <nav class="mm-inner container" aria-label="قائمة الجوال">
+      <ul class="mm-links">
+        <li class="mm-item">
+          <details class="mm-details">
+            <summary class="mm-link">المزايا <Icon name="plus" class="mm-plus" /></summary>
+            <ul class="mm-sub">
+              {nav.features.map((f) => (
+                <li><a href={f.href}>{f.label}{f.soon && <span class="chip chip--soon">قريبًا</span>}</a></li>
+              ))}
+            </ul>
+          </details>
+        </li>
+        {nav.links.map((l) => (
+          <li class="mm-item"><a class="mm-link" href={l.href}>{l.label}</a></li>
+        ))}
+        <li class="mm-item"><a class="mm-link" href={routes.contact}>تواصل معنا</a></li>
+      </ul>
+      <div class="mm-foot">
+        <Button href={nav.cta.href} variant="light">{nav.cta.label}</Button>
+        <a href={nav.lang.href} class="mm-lang" lang="en" hreflang="en">{nav.lang.label}</a>
+        <p class="mono mm-tag">Optimize Your Entire Store with One Click</p>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  /* Two floating pills (Figma "Main Page" header): logo + nav on the right, language + CTA on the left */
+  .site-header {
+    --pill-h: clamp(3.6rem, 4.17vw, 5rem); /* 80 */
+    position: fixed; inset: 0 0 auto; z-index: 50;
+    padding-top: clamp(0.75rem, 1.67vw, 2rem); /* 32 */
+    color: var(--ink);
+    transition: transform 0.6s var(--ease-out);
+    pointer-events: none;
+  }
+  .site-header.is-hidden:not(.menu-open) { transform: translateY(-140%); }
+
+  .hdr-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .hdr-pill {
+    pointer-events: auto;
+    display: flex; align-items: center;
+    height: var(--pill-h);
+    border-radius: 72px;
+    background: rgb(255 255 255 / 0.87);
+    box-shadow: inset 0 0 0 1px var(--line), 0 13px 16px rgb(125 38 20 / 0.06);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  }
+  .hdr-main { gap: clamp(1.5rem, 3.75vw, 4.5rem); padding-inline: 1.25rem 2rem; }
+  .hdr-actions { gap: clamp(0.75rem, 1.25vw, 1.5rem); padding-inline: 1.55rem 0.75rem; background: rgb(255 254 253 / 0.95); }
+  .hdr-logo { display: block; flex: none; }
+  .hdr-logo-svg { width: clamp(64px, 4.3vw, 83px); }
+
+  .hdr-links { display: flex; align-items: center; gap: clamp(0.25rem, 1.2vw, 1.4rem); }
+  .nav-link {
+    position: relative; display: inline-flex; align-items: center; gap: 0.3rem;
+    padding: 0.45rem 0.6rem; border-radius: 999px;
+    font-family: var(--font-display); font-size: 0.9375rem; font-weight: 400; /* 15 */
+    transition: background-color 0.3s;
+  }
+  .nav-link:hover, .nav-link[aria-expanded="true"] { background: color-mix(in srgb, currentColor 12%, transparent); }
+  .nav-chev { width: 16px; height: 16px; transition: transform 0.4s var(--ease-out); }
+  .nav-link[aria-expanded="true"] .nav-chev { transform: rotate(180deg); }
+
+  /* Mega menu */
+  .has-mega { position: relative; }
+  .mega {
+    position: absolute; top: calc(100% + 14px); inset-inline-start: 50%;
+    translate: 50% 0; /* RTL: start is right, so +50% centres it */
+    width: min(620px, 80vw);
+    opacity: 0; visibility: hidden; transform: translateY(-8px) scale(0.98);
+    transform-origin: top center;
+    transition: opacity 0.35s var(--ease-out), transform 0.45s var(--ease-out), visibility 0s 0.45s;
+  }
+  .mega.is-open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+  .mega-inner {
+    background: #fff; color: var(--ink);
+    border-radius: var(--radius); padding: 1.25rem;
+    box-shadow: 0 30px 80px -30px rgb(53 53 53 / 0.45), inset 0 0 0 1px var(--line);
+  }
+  .mega-title { color: var(--muted); margin-bottom: 0.75rem; text-align: end; }
+  .mega-list { display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem; }
+  .mega-item {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.6rem 0.7rem; border-radius: 14px;
+    font-size: 0.92rem; font-weight: 500; line-height: 1.5;
+    transition: background-color 0.25s;
+  }
+  .mega-item:hover { background: var(--coral-50); }
+  .mega-ico {
+    display: grid; place-items: center; flex: none;
+    width: 40px; height: 40px; border-radius: 12px;
+    background: var(--coral-100); color: var(--coral-700);
+    transition: transform 0.4s var(--ease-spring), background-color 0.3s, color 0.3s;
+  }
+  .mega-ico :global(.icon) { width: 24px; height: 24px; }
+  .mega-item:hover .mega-ico { transform: rotate(-8deg) scale(1.06); background: var(--coral); color: #fff; }
+  .mega-label { flex: 1; }
+  .mega-all { margin-top: 0.9rem; margin-inline-start: 0.7rem; font-size: 0.92rem; }
+
+  .hdr-lang { display: inline-flex; align-items: center; gap: 4px; font-size: 1rem; line-height: 1; white-space: nowrap; }
+  .hdr-lang img { width: 24px; height: 24px; }
+  .hdr-cta { min-height: calc(var(--pill-h) - 24px); padding: 0.4rem clamp(1.25rem, 1.95vw, 2.35rem); font-size: 1rem; }
+
+  .hdr-burger {
+    display: none; width: 44px; height: 44px; border-radius: 50%;
+    place-items: center;
+    background: var(--sand);
+  }
+  .burger-lines { position: relative; width: 20px; height: 12px; display: block; }
+  .burger-lines i {
+    position: absolute; inset-inline: 0; height: 2px; border-radius: 2px; background: currentColor;
+    transition: transform 0.5s var(--ease-out), top 0.5s var(--ease-out);
+  }
+  .burger-lines i:first-child { top: 1px; }
+  .burger-lines i:last-child { top: 9px; width: 70%; }
+  .menu-open .burger-lines i:first-child { top: 5px; transform: rotate(45deg); }
+  .menu-open .burger-lines i:last-child { top: 5px; width: 100%; transform: rotate(-45deg); }
+
+  /* Mobile menu */
+  .mobile-menu {
+    pointer-events: auto; /* the header shell itself lets clicks through */
+    position: fixed; inset: 0; z-index: -1;
+    background: var(--coral); color: #fff;
+    clip-path: circle(0% at 10% 40px);
+    visibility: hidden;
+    transition: clip-path 0.8s var(--ease-out), visibility 0s 0.8s;
+    overflow-y: auto;
+  }
+  .mobile-menu::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: var(--grain); opacity: 0.14; mix-blend-mode: multiply;
+  }
+  .menu-open .mobile-menu {
+    clip-path: circle(150% at 10% 40px); visibility: visible;
+    transition: clip-path 0.9s var(--ease-out), visibility 0s;
+  }
+  .mm-inner { min-height: 100%; display: flex; flex-direction: column; justify-content: space-between; padding-top: calc(var(--header-h) + 2rem); padding-bottom: 2rem; gap: 2rem; }
+  .mm-links { display: grid; }
+  .mm-item { border-bottom: 1px solid var(--on-coral-line); }
+  .mm-link {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.9rem 0;
+    font-family: var(--font-display); font-size: clamp(1.6rem, 7vw, 2.4rem); font-weight: 600; line-height: 1.4;
+    list-style: none;
+  }
+  .mm-link::-webkit-details-marker { display: none; }
+  .mm-plus { width: 28px; height: 28px; transition: transform 0.45s var(--ease-out); }
+  .mm-details[open] .mm-plus { transform: rotate(45deg); }
+  .mm-sub { display: grid; gap: 0.2rem; padding-bottom: 1rem; }
+  .mm-sub a { display: flex; align-items: center; gap: 0.5rem; padding: 0.35rem 0; font-size: 1.05rem; opacity: 0.92; }
+  .mm-sub .chip { background: rgb(255 255 255 / 0.2); color: #fff; }
+  .mm-foot { display: grid; gap: 1.25rem; justify-items: start; }
+  .mm-lang { font-size: 1.05rem; text-decoration: underline; text-underline-offset: 4px; }
+  .mm-tag { opacity: 0.8; }
+
+  .menu-open .hdr-pill { box-shadow: none; }
+
+  @media (max-width: 1100px) {
+    .hdr-nav { display: none; }
+    .hdr-burger { display: grid; }
+    .hdr-main { padding-inline: 1rem; }
+    .hdr-actions { padding-inline: 1rem 0.5rem; }
+  }
+  @media (max-width: 600px) {
+    .hdr-cta, .hdr-lang { display: none; }
+    .hdr-actions { padding-inline: 0.5rem; }
+  }
+</style>

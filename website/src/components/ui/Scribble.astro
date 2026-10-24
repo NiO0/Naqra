@@ -1,0 +1,31 @@
+---
+// Hand-drawn marks that draw themselves when scrolled into view (see scripts/reveal.ts).
+// kind: underline | circle | double
+interface Props { kind?: "underline" | "circle" | "double"; class?: string; delay?: number }
+const { kind = "underline", class: cls = "", delay = 0 } = Astro.props;
+---
+{kind === "circle" ? (
+  <svg class:list={["scribble", cls]} viewBox="0 0 300 120" preserveAspectRatio="none" aria-hidden="true" data-draw data-draw-delay={delay}>
+    <path d="M176 10C96 3 18 22 11 58c-6 34 76 56 158 52 76-4 122-26 120-58C287 20 214 4 120 15" />
+  </svg>
+) : kind === "double" ? (
+  <svg class:list={["scribble", cls]} viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true" data-draw data-draw-delay={delay}>
+    <path d="M296 9C204 4 98 4 4 11" />
+    <path d="M272 18c-78-3-160-3-236 2" />
+  </svg>
+) : (
+  <svg class:list={["scribble", cls]} viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true" data-draw data-draw-delay={delay}>
+    <path d="M297 13C230 5 122 2 3 12c60-3 130-2 190 4" />
+  </svg>
+)}
+<style>
+  .scribble {
+    fill: none;
+    stroke: var(--scribble, var(--coral));
+    stroke-width: var(--scribble-w, 4.5px);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    overflow: visible;
+  }
+  .scribble :global(path) { vector-effect: non-scaling-stroke; }
+</style>

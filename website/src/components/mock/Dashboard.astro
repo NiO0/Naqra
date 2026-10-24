@@ -1,0 +1,233 @@
+---
+// Hero product visual: an illustrative Naqra dashboard that bulk-optimizes products.
+// Animated by scripts/dashboard.ts: the hero's pressed button runs "optimize all" and rows update one by one.
+import ProductThumb from "./ProductThumb.astro";
+import Arrow from "../brand/Arrow.astro";
+import Icon from "../ui/Icon.astro";
+
+const rows = [
+  { kind: "tshirt", before: "تيشرت قطن", after: "تيشيرت قطن رجالي بأكمام قصيرة", s0: 28, s1: 92 },
+  { kind: "bottle", before: "قارورة مياه", after: "قارورة مياه ستانلس ستيل 500 مل", s0: 35, s1: 95 },
+  { kind: "bag", before: "شنطة جلد", after: "حقيبة يد نسائية من الجلد الطبيعي", s0: 22, s1: 89 },
+  { kind: "watch", before: "ساعة", after: "ساعة يد رجالية كلاسيكية بسوار جلدي", s0: 41, s1: 96 },
+  { kind: "shoe", before: "حذاء", after: "حذاء رياضي خفيف للجري بنعل مريح", s0: 30, s1: 91 },
+] as const;
+const C = 2 * Math.PI * 15; // score ring circumference
+---
+<div class="dash-wrap" data-dash-wrap>
+  <div class="dash" data-dash role="img" aria-label="واجهة توضيحية للوحة تحكم نقرة: تحسين عناوين عدة منتجات دفعة واحدة">
+    <div class="dash-top" aria-hidden="true">
+      <span class="dash-dots"><i></i><i></i><i></i></span>
+      <span class="dash-url mono">app.naqra.com/products</span>
+      <span class="dash-store">متجر ليان <Icon name="chevron" /></span>
+    </div>
+
+    <div class="dash-body" aria-hidden="true">
+      <aside class="dash-side">
+        <span class="ds-logo"><Arrow sparks={false} /></span>
+        <span class="ds-item is-active"><Icon name="stack" /></span>
+        <span class="ds-item"><Icon name="tag" /></span>
+        <span class="ds-item"><Icon name="image" /></span>
+        <span class="ds-item"><Icon name="bolt" /></span>
+      </aside>
+
+      <div class="dash-main">
+        <div class="dash-head">
+          <div class="dh-title">
+            <p class="dh-h">المنتجات</p>
+            <p class="dh-meta"><b data-dash-count>0</b> من 248 منتج تم تحسينه</p>
+          </div>
+          <div class="dh-actions">
+            <span class="dh-filter">العناوين · الأوصاف · Meta</span>
+            <span class="dh-btn is-clickable" data-dash-btn>
+              <Icon name="spark" /> حسّن الكل بنقرة
+            </span>
+          </div>
+        </div>
+
+        <div class="dash-progress"><i data-dash-bar></i></div>
+
+        <div class="dash-table">
+          <div class="dt-row dt-head">
+            <span class="dt-check"></span>
+            <span class="dt-prod">المنتج</span>
+            <span class="dt-score">جاهزية السيو</span>
+            <span class="dt-status">الحالة</span>
+          </div>
+          {rows.map((r) => (
+            <div class="dt-row" data-dash-row data-s0={r.s0} data-s1={r.s1}>
+              <span class="dt-check"><i class="cbox"><Icon name="check" strokeWidth={4} /></i></span>
+              <span class="dt-prod">
+                <span class="dt-thumb"><ProductThumb kind={r.kind} /></span>
+                <span class="dt-titles">
+                  <span class="dt-t dt-before">{r.before}<em class="dt-warn">!</em></span>
+                  <span class="dt-t dt-after">{r.after}</span>
+                </span>
+              </span>
+              <span class="dt-score">
+                <svg class="ring" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15" class="ring-bg" />
+                  <circle cx="18" cy="18" r="15" class="ring-fg" stroke-dasharray={C} stroke-dashoffset={C * (1 - r.s0 / 100)} data-ring />
+                </svg>
+                <b class="mono" data-score>{r.s0}</b>
+              </span>
+              <span class="dt-status">
+                <span class="st st-todo">بحاجة لتحسين</span>
+                <span class="st st-done"><Icon name="check" strokeWidth={4} /> تم التحسين</span>
+              </span>
+              <i class="dt-shimmer"></i>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- floating annotation cards -->
+  <div class="dash-float df-1" data-float="-1.2" aria-hidden="true">
+    <span class="df-k mono">meta title</span>
+    <span class="df-v">قارورة مياه ستانلس ستيل 500 مل | متجر ليان</span>
+    <span class="df-ok"><Icon name="check" strokeWidth={4} /></span>
+  </div>
+  <div class="dash-float df-2" data-float="1" aria-hidden="true">
+    <span class="df-k mono">alt text</span>
+    <span class="df-v">تيشيرت قطن رجالي أبيض</span>
+    <span class="df-ok"><Icon name="check" strokeWidth={4} /></span>
+  </div>
+</div>
+
+<style>
+  .dash-wrap { position: relative; perspective: 1400px; container-type: inline-size; }
+  .dash {
+    --d-line: #ece6e1;
+    position: relative;
+    font-size: clamp(9.5px, 1.36cqi, 15px);
+    background: #fff; color: var(--ink);
+    border-radius: clamp(14px, 2cqi, 26px);
+    box-shadow:
+      0 0 0 1px rgb(53 53 53 / 0.08),
+      0 2px 4px rgb(53 53 53 / 0.04),
+      0 30px 60px -30px rgb(80 40 25 / 0.28),
+      0 70px 110px -60px rgb(80 40 25 / 0.22);
+    overflow: hidden;
+    transform-origin: 50% 0%;
+    will-change: transform;
+    line-height: 1.5;
+  }
+  .dash-top {
+    display: flex; align-items: center; gap: 1.2em;
+    padding: 0.9em 1.4em; border-bottom: 1px solid var(--d-line);
+    background: #fcfaf8;
+  }
+  .dash-dots { display: flex; gap: 0.45em; }
+  .dash-dots i { width: 0.75em; height: 0.75em; border-radius: 50%; background: #e7dfd9; }
+  .dash-dots i:first-child { background: var(--coral); }
+  .dash-url {
+    flex: 1; max-width: 26em; margin-inline: auto; text-align: center;
+    padding: 0.35em 1em; border-radius: 99em; background: #f1ebe6; color: var(--muted);
+    font-size: 0.85em;
+  }
+  .dash-store { display: inline-flex; align-items: center; gap: 0.3em; font-weight: 600; font-size: 0.95em; }
+  .dash-store :global(.icon) { width: 1.2em; height: 1.2em; }
+
+  .dash-body { display: grid; grid-template-columns: 4.6em 1fr; }
+  .dash-side {
+    display: flex; flex-direction: column; align-items: center; gap: 0.9em;
+    padding: 1.4em 0; border-inline-end: 1px solid var(--d-line); background: #fcfaf8;
+  }
+  .ds-logo { width: 2.3em; color: var(--coral); margin-bottom: 0.6em; }
+  .ds-item { display: grid; place-items: center; width: 2.6em; height: 2.6em; border-radius: 0.8em; color: var(--muted); }
+  .ds-item :global(.icon) { width: 1.5em; height: 1.5em; }
+  .ds-item.is-active { background: var(--coral-100); color: var(--coral-700); }
+
+  .dash-main { padding: 1.5em 1.8em 1.2em; min-width: 0; }
+  .dash-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1em; flex-wrap: wrap; }
+  .dh-h { font-family: var(--font-display); font-weight: 700; font-size: 1.55em; line-height: 1.3; }
+  .dh-meta { color: var(--muted); font-size: 0.92em; }
+  .dh-meta b { color: var(--ink); font-family: var(--font-mono); font-weight: 600; }
+  .dh-actions { display: flex; align-items: center; gap: 0.8em; }
+  .dh-filter { padding: 0.55em 1em; border-radius: 99em; border: 1px solid var(--d-line); font-size: 0.88em; color: var(--muted); }
+  .dh-btn {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 0.5em;
+    padding: 0.7em 1.3em; border-radius: 99em;
+    background: var(--coral); color: #fff; font-weight: 700; font-family: var(--font-display);
+    box-shadow: 0 8px 18px -8px rgb(242 110 83 / 0.8);
+  }
+  .dh-btn :global(.icon) { width: 1.25em; height: 1.25em; }
+
+  .dash-progress { height: 0.35em; border-radius: 99em; background: #f3eeea; margin: 1.2em 0 0.6em; overflow: hidden; }
+  .dash-progress i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, #ffb59f, var(--coral)); transform-origin: right; transform: scaleX(0); border-radius: inherit; }
+
+  .dt-row {
+    position: relative;
+    display: grid; grid-template-columns: 2.4em minmax(0, 1fr) 9.5em 9.5em; align-items: center; gap: 1em;
+    padding: 0.75em 0.4em; border-bottom: 1px solid var(--d-line);
+    overflow: hidden;
+  }
+  .dt-row:last-child { border-bottom: 0; }
+  .dt-head { padding-block: 0.5em; color: var(--muted); font-size: 0.85em; font-weight: 600; }
+  .cbox {
+    display: grid; place-items: center; width: 1.35em; height: 1.35em; border-radius: 0.35em;
+    border: 1.5px solid #d9d1cb; color: #fff; transition: background-color 0.3s, border-color 0.3s;
+  }
+  .cbox :global(.icon) { width: 0.95em; height: 0.95em; opacity: 0; }
+  .dt-row.is-selected .cbox { background: var(--ink); border-color: var(--ink); }
+  .dt-row.is-selected .cbox :global(.icon) { opacity: 1; }
+
+  .dt-prod { display: flex; align-items: center; gap: 0.9em; min-width: 0; }
+  .dt-thumb { width: 2.8em; flex: none; }
+  .dt-titles { display: grid; min-width: 0; }
+  .dt-t { grid-area: 1 / 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+  .dt-before { color: var(--muted); display: inline-flex; align-items: center; gap: 0.5em; }
+  .dt-warn {
+    display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: 50%;
+    background: #fdebd1; color: #c27a12; font-style: normal; font-size: 0.8em; font-weight: 800;
+  }
+  .dt-after { color: var(--ink); opacity: 0; transform: translateY(100%); }
+
+  .dt-score { display: flex; align-items: center; gap: 0.6em; }
+  .ring { width: 2.2em; height: 2.2em; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke-width: 4; }
+  .ring-bg { stroke: #f1ebe6; }
+  .ring-fg { stroke: #e9a23b; stroke-linecap: round; }
+  .dt-score b { font-size: 1em; font-weight: 600; }
+
+  .st { grid-area: 1 / 1; display: inline-flex; align-items: center; gap: 0.35em; justify-self: start; padding: 0.3em 0.8em; border-radius: 99em; font-size: 0.85em; font-weight: 600; white-space: nowrap; }
+  .dt-status { display: grid; }
+  .st-todo { background: #f5f0ec; color: var(--muted); }
+  .st-done { background: var(--coral-100); color: var(--coral-700); opacity: 0; transform: scale(0.6); }
+  .st-done :global(.icon) { width: 1.1em; height: 1.1em; }
+
+  .dt-shimmer {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(270deg, transparent 0%, rgb(242 110 83 / 0.14) 45%, rgb(255 255 255 / 0.6) 50%, rgb(242 110 83 / 0.14) 55%, transparent 100%);
+    transform: translateX(110%);
+  }
+
+  /* Floating annotation cards */
+  .dash-float {
+    position: absolute; z-index: 6;
+    display: grid; grid-template-columns: 1fr auto; gap: 0.1rem 0.8rem; align-items: center;
+    padding: 0.6rem 0.85rem; border-radius: 14px;
+    background: #fff; color: var(--ink);
+    box-shadow: 0 20px 40px -20px rgb(53 30 20 / 0.32), inset 0 0 0 1px rgb(53 53 53 / 0.06);
+    font-size: 0.8rem; line-height: 1.5;
+    max-width: 260px;
+  }
+  .df-k { color: var(--coral-700); font-size: 0.66rem; }
+  .df-v { grid-column: 1; font-weight: 600; }
+  .df-ok { grid-row: 1 / span 2; grid-column: 2; display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--coral); color: #fff; }
+  .df-ok :global(.icon) { width: 16px; height: 16px; }
+  /* meta title floats over the browser bar, alt text hangs off the bottom edge — neither covers the table or the button */
+  .df-1 { top: -1.5rem; inset-inline-end: 22%; rotate: -4deg; }
+  .df-2 { bottom: -1.4rem; inset-inline-start: 7%; rotate: 3deg; }
+
+  @container (max-width: 460px) {
+    .dash { font-size: 11.5px; }
+    .dash-body { grid-template-columns: 1fr; }
+    .dash-side, .dt-status, .dh-filter, .dash-store, .dash-float { display: none; }
+    .dt-row { grid-template-columns: 1.8em minmax(0, 1fr) 6em; gap: 0.7em; }
+    .dash-main { padding: 1.1em 1em 0.8em; }
+  }
+</style>

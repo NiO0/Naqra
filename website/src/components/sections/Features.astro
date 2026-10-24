@@ -1,0 +1,139 @@
+---
+import SectionHead from "../ui/SectionHead.astro";
+import Button from "../ui/Button.astro";
+import { features } from "../../data/home";
+
+const [subBefore, subAfter] = features.sub.split(features.subStrong);
+// Resting tilt of each note (the design's angles): coral notes lean one way, cream notes the other
+const tilts = [6.84, -4.1, 2.72, -3.64, 3.49, -3.66];
+// Two-column snake (right→left, then left→right) so reading order zigzags down the board
+const place = (i: number) => {
+  const row = Math.floor(i / 2) + 1;
+  const first = i % 2 === 0;
+  return { row, col: row % 2 ? (first ? 1 : 2) : (first ? 2 : 1) };
+};
+// Hand-drawn "feature orb" illustration per feature (public/art/f-*.svg)
+const art: Record<string, string> = {
+  content: "f-content", meta: "f-meta", "on-page": "f-onpage", "off-page": "f-offpage", images: "f-images", speed: "f-speed",
+};
+---
+<section class="section features" id="features" data-theme="dark" aria-labelledby="ft-title">
+  <div class="container ft-grid">
+    <div class="ft-side">
+      <div class="ft-sticky">
+        <SectionHead eyebrow={features.eyebrow} id="ft-title">{features.headline}</SectionHead>
+        <p class="ft-lead" data-reveal>{subBefore}<strong>{features.subStrong}</strong>{subAfter}</p>
+        <div class="ft-cta" data-reveal>
+          <Button href={features.cta.href} variant="coral" class="btn--block">{features.cta.label}</Button>
+        </div>
+      </div>
+    </div>
+
+    <div class="ft-board" data-ft-board>
+      <div class="ft-lines" aria-hidden="true" data-ft-lines></div>
+      <ol class="ft-cards">
+        {features.items.map((f, i) => {
+          const { row, col } = place(i);
+          return (
+            <li class="ft-slot" data-col={col} style={`--row:${row};--col:${col}`}>
+              <div class="ft-drop" data-ft-card={i % 2 ? "cream" : "coral"}>
+                <article class:list={["ft-card", i % 2 ? "is-cream" : "is-coral"]} style={`--tilt:${tilts[i % tilts.length]}deg`}>
+                  <div class="ft-card-top">
+                    <img class="ft-art" src={`/art/${art[f.id]}.svg`} alt="" width="115" height="115" loading="lazy" />
+                    <h3 class="ft-title">{f.title}</h3>
+                  </div>
+                  <p class="ft-text">{f.text}</p>
+                </article>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .features {
+    background: var(--ink); color: #fff; overflow: clip;
+    padding-block: clamp(5rem, 14vw, 17rem);
+  }
+  /* Cascadia Mono Regular 48 / 1.46 */
+  .features :global(.h2) { font-weight: 400; font-size: clamp(1.8rem, 2.5vw, 3rem); line-height: 1.46; }
+
+  .ft-grid {
+    position: relative; z-index: 1;
+    display: grid; grid-template-columns: minmax(0, 702fr) minmax(0, 938fr);
+    gap: clamp(1rem, 1.5vw, 1.5rem);
+  }
+  .ft-sticky { position: sticky; top: calc(var(--pill-h, 5rem) + 4rem); display: grid; gap: 1rem; padding-top: clamp(1rem, 3.4vw, 4rem); }
+  /* Alexandria Light 20 / 2, the key phrase in Medium */
+  .ft-lead { font-size: var(--fs-lead); line-height: 2; font-weight: 300; color: var(--cream); }
+  .ft-lead strong { color: #fff; font-weight: 500; }
+  .ft-cta { justify-self: start; margin-top: clamp(1rem, 1.9vw, 1.875rem); }
+  .ft-cta :global(.btn) { min-width: min(22rem, 100%); }
+
+  /* ---------- Ruled board ---------- */
+  .ft-board {
+    --offset: clamp(2rem, 4.75vw, 5.7rem); /* how far the far column hangs below the near one */
+    position: relative;
+    padding-bottom: var(--offset);
+  }
+  /* graphite rules every 68px at 20% (Figma "Frame 31") */
+  .ft-lines {
+    position: absolute; inset: 2.75rem 0 0; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgb(107 107 107 / 0.2) 0 1px, transparent 1px 68px);
+  }
+  .ft-cards {
+    position: relative;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 25.875rem)); justify-content: space-between;
+    column-gap: clamp(1.5rem, 4.6vw, 5.5rem); row-gap: clamp(1.5rem, 4.3vw, 5.2rem);
+  }
+  .ft-slot { position: relative; grid-row: var(--row); grid-column: var(--col); }
+  .ft-slot[data-col="2"] { translate: 0 var(--offset); }
+  /* GSAP owns the drop wrapper's transform; the note inside keeps its CSS tilt */
+  .ft-drop { height: 100%; }
+
+  /* ---------- Paper notes (414 × 392 at 1920) ---------- */
+  .ft-card {
+    position: relative; height: 100%;
+    display: flex; flex-direction: column; gap: clamp(1rem, 2vw, 2.45rem);
+    aspect-ratio: 414 / 392;
+    padding: 3.2% 5.1% 12.2% 10.9%;
+    background: var(--coral); color: var(--ink);
+    box-shadow: 0 22px 40px -24px rgb(0 0 0 / 0.55);
+    rotate: var(--tilt);
+    transition: rotate 0.6s var(--ease-out), translate 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out);
+  }
+  .ft-card.is-cream { background: var(--cream); }
+  @media (hover: hover) {
+    .ft-slot:hover { z-index: 2; }
+    .ft-slot:hover .ft-card { rotate: 0deg; translate: 0 -6px; box-shadow: 0 34px 50px -26px rgb(0 0 0 / 0.7); }
+  }
+
+  /* 115px orb + 222px title inside the 348px content box */
+  .ft-card-top { display: flex; align-items: flex-end; gap: 2.2%; }
+  .ft-art { flex: none; width: 33%; height: auto; }
+  .ft-title { width: 64%; font-size: clamp(1rem, 1.2vw, 1.4375rem); line-height: 1.5; font-weight: 600; color: #272727; }
+  .ft-text { max-width: 22rem; font-size: clamp(0.875rem, 1vw, 1.1875rem); line-height: 1.7; color: var(--ink); }
+
+  /* Notes start off the board and drop in on scroll (scripts/features.ts); failsafe if JS never runs */
+  :global(.js:not(.reduced)) .ft-drop { opacity: 0; }
+  :global(.js:not(.reduced):not(.js-ready)) .ft-drop { animation: failsafe-show 0.5s 3.5s forwards; }
+
+  @media (max-width: 1100px) {
+    .ft-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .ft-sticky { position: static; padding-top: 0; }
+    .ft-cards { justify-content: center; }
+  }
+  @media (max-width: 620px) {
+    .ft-board { --offset: 0px; }
+    .ft-cards { grid-template-columns: minmax(0, 22rem); row-gap: 1.75rem; }
+    .ft-slot { grid-row: auto; grid-column: auto; }
+    .ft-slot:nth-child(odd) { translate: 0.75rem 0; }
+    .ft-slot:nth-child(even) { translate: -0.75rem 0; }
+    .ft-card { aspect-ratio: auto; padding: 1rem 1.25rem 2rem 1.75rem; }
+    .ft-title { font-size: 1.1rem; }
+    .ft-text { font-size: 0.95rem; }
+  }
+</style>

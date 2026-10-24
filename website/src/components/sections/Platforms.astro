@@ -1,0 +1,99 @@
+---
+import SectionHead from "../ui/SectionHead.astro";
+import Icon from "../ui/Icon.astro";
+import Arrow from "../brand/Arrow.astro";
+import { platforms } from "../../data/home";
+// NOTE: platform marks below are typographic placeholders — swap in the official
+// Salla / Shopify logo SVGs from their brand kits before launch.
+---
+<section class="section platforms" id="platforms" data-header-theme="light" aria-labelledby="pf-title">
+  <div class="container">
+    <SectionHead eyebrow={platforms.eyebrow} center id="pf-title" sub={platforms.sub}>
+      {platforms.headline}
+    </SectionHead>
+
+    <div class="pf-stage" data-platforms>
+      <svg class="pf-wires" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M290 150 C 380 150, 400 150, 500 150" class="pf-wire" />
+        <path d="M710 150 C 620 150, 600 150, 500 150" class="pf-wire" />
+        <path d="M290 150 C 380 150, 400 150, 500 150" class="pf-flow" />
+        <path d="M710 150 C 620 150, 600 150, 500 150" class="pf-flow" />
+      </svg>
+
+      {platforms.items.map((p, i) => (
+        <article class:list={["pf-card", `pf-card--${i + 1}`]} data-reveal="card">
+          <div class="pf-mark" aria-hidden="true">
+            <span class:list={["pf-word", i === 1 && "is-latin"]}>{i === 0 ? p.name : p.latin.toLowerCase()}</span>
+          </div>
+          <h3 class="pf-name">{p.name} <span class="mono">{p.latin}</span></h3>
+          <p class="pf-note"><Icon name="verified" /> {p.note}</p>
+        </article>
+      ))}
+
+      <div class="pf-hub" aria-hidden="true">
+        <span class="pf-hub-ring"></span>
+        <span class="pf-hub-ring r2"></span>
+        <span class="pf-hub-core"><Arrow /></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .platforms { background: var(--paper); overflow: clip; }
+  .pf-stage {
+    position: relative;
+    display: grid; grid-template-columns: 1fr 200px 1fr; align-items: center; gap: 0;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+  }
+  .pf-wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .pf-wires path { fill: none; vector-effect: non-scaling-stroke; }
+  .pf-wire { stroke: var(--line-strong); stroke-width: 2; }
+  .pf-flow { stroke: var(--coral); stroke-width: 3; stroke-dasharray: 6 18; stroke-linecap: round; animation: flow 1.2s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -24; } }
+
+  .pf-card {
+    position: relative; z-index: 1;
+    display: grid; gap: 0.8rem; justify-items: center; text-align: center;
+    padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 3vw, 2rem);
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: inset 0 0 0 1px var(--line);
+    transition: transform 0.6s var(--ease-out), box-shadow 0.5s;
+  }
+  .pf-card:hover { transform: translateY(-6px) rotate(-1deg); box-shadow: inset 0 0 0 1.5px var(--coral), 0 30px 60px -40px rgb(242 110 83 / 0.7); }
+  .pf-card--1 { grid-column: 1; }
+  .pf-card--2 { grid-column: 3; grid-row: 1; }
+  .pf-mark {
+    display: grid; place-items: center;
+    width: clamp(110px, 14vw, 150px); aspect-ratio: 1; border-radius: 32px;
+    background: #fff; box-shadow: 0 20px 40px -24px rgb(53 53 53 / 0.45);
+  }
+  .pf-word { font-family: var(--font-display); font-weight: 800; font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1; color: var(--ink); }
+  .pf-word.is-latin { font-family: system-ui, "Segoe UI", sans-serif; font-weight: 800; letter-spacing: -0.03em; font-size: clamp(1.4rem, 2.6vw, 1.9rem); }
+  .pf-name { font-size: 1.35rem; }
+  .pf-name .mono { color: var(--muted); font-weight: 400; margin-inline-start: 0.35rem; }
+  .pf-note { display: inline-flex; align-items: center; gap: 0.45rem; color: color-mix(in srgb, var(--ink) 75%, transparent); font-size: 0.95rem; }
+  .pf-note :global(.icon) { width: 22px; height: 22px; color: var(--coral); }
+
+  .pf-hub { grid-column: 2; grid-row: 1; position: relative; z-index: 1; justify-self: center; display: grid; place-items: center; width: 120px; height: 120px; }
+  .pf-hub-core {
+    position: relative; z-index: 1; display: grid; place-items: center;
+    width: 92px; height: 92px; border-radius: 28px; background: var(--coral); color: #fff;
+    box-shadow: 0 20px 40px -16px rgb(242 110 83 / 0.8);
+    rotate: -6deg;
+  }
+  .pf-hub-core :global(.arrow-mark) { width: 56px; }
+  .pf-hub-ring { position: absolute; inset: 0; border-radius: 36px; border: 2px solid var(--coral); opacity: 0; animation: ring 2.6s var(--ease-out) infinite; }
+  .pf-hub-ring.r2 { animation-delay: 1.3s; }
+  @keyframes ring { from { transform: scale(0.75) rotate(-6deg); opacity: 0.7; } to { transform: scale(1.5) rotate(-6deg); opacity: 0; } }
+
+  @media (max-width: 760px) {
+    .pf-stage { grid-template-columns: 1fr; gap: 1.25rem; }
+    .pf-card--1, .pf-card--2, .pf-hub { grid-column: 1; grid-row: auto; }
+    .pf-hub { order: 2; width: 100px; height: 100px; margin-block: 0.5rem; }
+    .pf-card--2 { order: 3; }
+    .pf-wires { display: none; }
+    .pf-hub::before { content: ""; position: absolute; top: -40%; bottom: -40%; width: 3px; background: repeating-linear-gradient(var(--coral) 0 6px, transparent 6px 16px); }
+  }
+</style>

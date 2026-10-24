@@ -1,0 +1,16 @@
+# dependencies & build output (the website has its own .gitignore too)
+node_modules/
+website/dist/
+website/.astro/
+website/dist.7z
+
+# raw brand bundle (fonts and logos are extracted into /fonts and /logos)
+Naqra Branding files.zip
+
+# OS / archive junk
+__MACOSX/
+.DS_Store
+Thumbs.db
+
+# local-only tool settings
+.claude/settings.local.json

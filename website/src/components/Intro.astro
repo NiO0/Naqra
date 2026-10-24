@@ -1,0 +1,23 @@
+---
+// First-visit intro: the brand arrow appears, clicks, then flies into the header logo.
+// Shown once per session; skipped for reduced motion (see the inline script in Base.astro).
+import Arrow from "./brand/Arrow.astro";
+---
+<div class="intro" data-intro aria-hidden="true">
+  <div class="intro-mark" data-intro-mark><Arrow /></div>
+  <p class="intro-tag mono">Optimize Your Entire Store with One Click</p>
+</div>
+<style>
+  .intro {
+    position: fixed; inset: 0; z-index: 100;
+    display: none; place-items: center;
+    background: var(--coral); color: #fff;
+  }
+  /* visible from first paint for first-time visitors; failsafe hides it if JS never runs */
+  :global(.js:not(.intro-seen):not(.reduced)) .intro { display: grid; animation: intro-failsafe 0.4s 4s forwards; }
+  :global(.js-ready) .intro { animation: none; }
+  @keyframes intro-failsafe { to { opacity: 0; visibility: hidden; } }
+  .intro-mark { width: clamp(110px, 16vw, 170px); color: #fff; --spark-fill: currentColor; }
+  .intro-mark :global(.arrow-mark) { width: 100%; }
+  .intro-tag { position: absolute; bottom: 2rem; inset-inline: 0; text-align: center; opacity: 0.85; font-size: 0.85rem; }
+</style>
