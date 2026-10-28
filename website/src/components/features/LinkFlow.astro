@@ -1,0 +1,115 @@
+---
+// Off-page SEO visual: links from other sites point to the store, and the store climbs in search.
+// Laid out on the Figma frame (785.5 × 549.8) in physical coordinates, sized in cqi so it scales as one.
+// Decorative; the section's points carry the meaning.
+import Arrow from "../brand/Arrow.astro";
+import Icon from "../ui/Icon.astro";
+---
+<figure class="lflow" data-inview aria-hidden="true">
+  <svg class="lf-wires" viewBox="0 0 785.5 549.8" preserveAspectRatio="none">
+    <path d="M392 258 C 462 258, 468 62, 537 62" />
+    <path d="M392 258 C 462 258, 470 268, 537 268" />
+    <path d="M392 258 C 462 258, 468 481, 537 481" />
+    <path d="M284 176 C 336 176, 340 258, 392 258" />
+  </svg>
+
+  <ul class="lf-sites">
+    {[[153, 107], [134, 161], [168, 96]].map(([a, b], n) => (
+      <li style={`--n:${n}`}>
+        <span class="lf-dots"><i></i><i></i><i></i></span>
+        <span class="lf-lines"><i style={`--w:${a}`}></i><i style={`--w:${b}`}></i></span>
+        <span class="lf-link"><Icon name="link" /></span>
+      </li>
+    ))}
+  </ul>
+
+  <div class="lf-store">
+    <span class="lf-mark"><Arrow /></span>
+    <span class="lf-store-label mono">YOUR STORE</span>
+  </div>
+
+  <div class="lf-rank">
+    <p class="lf-search"><i></i><Icon name="page" /></p>
+    <ol>
+      <li><span class="mono">1</span><i style="--w:146"></i></li>
+      <li class="is-you"><span class="mono">2</span><i style="--w:172"></i><b class="lf-up">▲</b></li>
+      <li><span class="mono">3</span><i style="--w:117"></i></li>
+    </ol>
+  </div>
+</figure>
+
+<style>
+  /* 1cqi = 7.855px on the 785.5px design frame */
+  .lflow {
+    position: relative; container-type: inline-size; aspect-ratio: 785.5 / 549.8; margin: 0;
+    border-radius: var(--radius-lg); overflow: hidden;
+    background: var(--coral-100); box-shadow: inset 0 0 0 1px #fff;
+    direction: ltr; /* positions are the frame's physical coordinates */
+  }
+  .lf-wires { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: var(--coral-200); stroke-width: 2.4; stroke-linecap: round; stroke-dasharray: 0.1 7; }
+  .lf-wires path { vector-effect: non-scaling-stroke; }
+  .is-inview .lf-wires path { stroke: var(--coral); animation: lf-flow 1.4s linear infinite; }
+  @keyframes lf-flow { to { stroke-dashoffset: -14.2; } }
+
+  /* three linking sites, tilted cards on the right */
+  .lf-sites { position: absolute; left: 67.9%; width: 27%; top: 6.8%; height: 86%; display: grid; align-content: space-between; }
+  .lf-sites li {
+    position: relative; height: 6.26cqi; border-radius: 1.53cqi; background: #fff;
+    filter: drop-shadow(0 2cqi 1.5cqi rgb(0 0 0 / 0.2));
+    rotate: -5deg; opacity: 0.5; translate: 1cqi 0;
+    transition: opacity 0.5s calc(var(--n) * 0.18s), translate 0.6s var(--ease-out) calc(var(--n) * 0.18s);
+  }
+  .lf-sites li:nth-child(2) { rotate: 3deg; }
+  .lf-sites li:nth-child(3) { rotate: -2deg; }
+  .is-inview .lf-sites li { opacity: 1; translate: 0 0; }
+  .lf-dots { position: absolute; right: 1.33cqi; top: 1.12cqi; display: flex; gap: 0.38cqi; }
+  .lf-dots i { width: 0.76cqi; height: 0.76cqi; border-radius: 50%; background: var(--line); }
+  .lf-lines { position: absolute; right: 1.33cqi; top: 2.7cqi; display: grid; justify-items: end; gap: 0.6cqi; }
+  .lf-lines i { display: block; width: calc(var(--w) / 7.855 * 1cqi); height: 0.76cqi; border-radius: 99px; background: var(--line); }
+  .lf-link {
+    position: absolute; left: -1.43cqi; top: 1.2cqi;
+    display: grid; place-items: center; width: 3.87cqi; height: 3.87cqi; border-radius: 50%;
+    background: var(--coral); color: #fff;
+  }
+  .lf-link :global(.icon) { width: 2.24cqi; height: 2.24cqi; }
+
+  /* the store, centre */
+  .lf-store { position: absolute; left: 43.26%; top: 37.5%; width: 13.24cqi; display: grid; justify-items: center; gap: 1.12cqi; }
+  .lf-mark {
+    display: grid; place-items: center; width: 100%; aspect-ratio: 1; border-radius: 50%;
+    background: var(--coral); color: #fff; box-shadow: 0 0 0 0 rgb(242 110 83 / 0.18);
+  }
+  .lf-mark :global(.arrow-mark) { width: 52%; }
+  .is-inview .lf-mark { animation: lf-pulse 2.4s ease-in-out infinite 1s; }
+  @keyframes lf-pulse { 50% { box-shadow: 0 0 0 2cqi rgb(242 110 83 / 0.12); } }
+  .lf-store-label {
+    padding: 0.2cqi 1.1cqi; border-radius: 0.76cqi; background: #fff; color: var(--ink);
+    font-size: max(1.39cqi, 8px); line-height: 1.75; letter-spacing: 0.12em; white-space: nowrap;
+  }
+
+  /* search results card, left: the store's result swaps places with the one above it */
+  .lf-rank {
+    position: absolute; left: 4.88%; top: 17.8%; width: 31cqi;
+    display: grid; gap: 1.2cqi; padding: 1.53cqi; border-radius: 2cqi;
+    background: #fff; color: var(--muted); rotate: 2deg;
+    filter: drop-shadow(0 2.5cqi 1.9cqi rgb(0 0 0 / 0.2));
+  }
+  .lf-search {
+    display: flex; align-items: center; gap: 0.75cqi; height: 3cqi; padding-inline: 0.9cqi 0.6cqi;
+    border-radius: 99px; background: var(--cream); box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .lf-search i { flex: 1; height: 0.9cqi; border-radius: 99px; background: var(--line); }
+  .lf-search :global(.icon) { width: 1.8cqi; height: 1.8cqi; }
+  .lf-rank ol { display: grid; gap: 0.92cqi; }
+  .lf-rank li {
+    position: relative; display: flex; flex-direction: row-reverse; align-items: center; gap: 0.8cqi;
+    height: 3.44cqi; padding-inline: 0.9cqi; border-radius: 1cqi;
+    font-size: max(1.39cqi, 8px); transition: translate 0.8s var(--ease-spring) 0.8s;
+  }
+  .lf-rank li i { display: block; width: calc(var(--w) / 7.855 * 1cqi); height: 0.9cqi; border-radius: 99px; background: var(--line); }
+  .lf-rank .is-you { background: var(--coral-50); box-shadow: inset 0 0 0 1px var(--coral-200); }
+  .lf-rank .is-you i { background: var(--coral); }
+  .lf-up { margin-right: auto; color: var(--ok); font-size: max(1.43cqi, 8px); line-height: 1; font-weight: 400; }
+  .is-inview .lf-rank .is-you { translate: 0 calc(-100% - 0.92cqi); }
+  .is-inview .lf-rank li:first-child { translate: 0 calc(100% + 0.92cqi); }
+</style>

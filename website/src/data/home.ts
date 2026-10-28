@@ -237,6 +237,10 @@ export const footer = {
     { label: "عن نقرة", href: routes.about },
     { label: "تواصل معنا", href: routes.contact },
   ],
+  legal: [
+    { label: "سياسة الخصوصية", href: routes.privacy },
+    { label: "الشروط والأحكام", href: routes.terms },
+  ],
   platforms: "Salla · Shopify",
   email: "info@Naqra.com",
   phone: null as string | null, // TODO: add phone / WhatsApp number when available

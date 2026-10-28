@@ -1,18 +1,26 @@
 ---
 import Button from "../ui/Button.astro";
 import { finalCta } from "../../data/home";
+
+type Link = { label: string; href: string };
+interface Props {
+  // Defaults to the home page's final CTA; other pages pass their own copy
+  copy?: { headline: { before?: string; mark: string }; text?: string; primary: Link; secondary?: Link };
+}
+const { headline, text, primary, secondary } = Astro.props.copy ?? finalCta;
+const isHome = !Astro.props.copy;
 ---
-<section class="final" id="start" data-theme="coral" aria-labelledby="final-title" data-final>
+<section class:list={["final", isHome && "is-trimmed"]} id="start" data-theme="coral" aria-labelledby="final-title" data-final>
   <div class="container final-inner">
     <div class="final-copy">
       <h2 class="final-title" id="final-title">
-        <span class="final-line" data-split>{finalCta.headline.before}</span>
-        <span class="final-mark"><span data-split>{finalCta.headline.mark}</span><img class="final-underline" src="/art/doodle-underline.svg" alt="" width="648" height="26" /></span>
+        {headline.before && <span class="final-line" data-split>{headline.before}</span>}
+        <span class="final-mark"><span data-split>{headline.mark}</span><img class="final-underline" src="/art/doodle-underline.svg" alt="" width="648" height="26" /></span>
       </h2>
-      <p class="final-text" data-reveal>{finalCta.text}</p>
+      {text && <p class="final-text" data-reveal>{text}</p>}
       <div class="final-ctas" data-reveal>
-        <Button href={finalCta.primary.href} variant="light">{finalCta.primary.label}</Button>
-        <Button href={finalCta.secondary.href} variant="ghost">{finalCta.secondary.label}</Button>
+        <Button href={primary.href} variant="light">{primary.label}</Button>
+        {secondary && <Button href={secondary.href} variant="ghost">{secondary.label}</Button>}
       </div>
     </div>
 
@@ -45,6 +53,10 @@ import { finalCta } from "../../data/home";
   .final-mark { position: relative; display: inline-block; white-space: nowrap; }
   .final-mark > span { position: relative; z-index: 1; }
   .final-underline { position: absolute; left: 4%; right: 0; bottom: -0.2em; width: 96%; height: 0.41em; }
+  /* home (Figma "Final CTA"): each part trimmed to cap height / baseline, 49px apart */
+  .is-trimmed .final-title { gap: clamp(1.5rem, 2.55vw, 3.06rem); }
+  .is-trimmed .final-line, .is-trimmed .final-mark { text-box: trim-both cap alphabetic; }
+  .is-trimmed .final-underline { bottom: -0.33em; }
   .final-text { font-size: var(--fs-lead); line-height: 1.7; max-width: 38.75rem; } /* 620 */
   .final-ctas { display: flex; flex-wrap: wrap; gap: 0.875rem; }
 

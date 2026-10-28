@@ -1,0 +1,73 @@
+---
+// Image optimization visual: one product photo, half pixelated ("before"), half crisp ("after"),
+// with the section's points floating over it. The divider sweeps in when scrolled into view.
+// thumb-tshirt-pixelated.png is the Figma "Pixelate" effect (size 10, 16 colour levels) baked at 2x.
+interface Props { points: { title: string; text: string }[] }
+const { points } = Astro.props;
+---
+<div class="isplit" data-inview>
+  <div class="is-stage" aria-hidden="true">
+    <img class="is-img is-raw" src="/art/thumb-tshirt-pixelated.png" alt="" width="1126" height="1126" loading="lazy" decoding="async" />
+    <div class="is-clear"><img class="is-img" src="/art/thumb-tshirt-after.png" alt="" width="512" height="512" loading="lazy" decoding="async" /></div>
+    <span class="is-divider"><img src="/art/how-sparkle.svg" alt="" width="20" height="20" /></span>
+    <span class="is-tag is-tag--before">قبل</span>
+    <span class="is-tag is-tag--after">بعد</span>
+  </div>
+  <ol class="is-points">
+    {points.map((p, i) => (
+      <li class="is-point" style={`--n:${i}`} data-reveal="card">
+        <span class="is-pn mono" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+        <h3 class="is-pt">{p.title}</h3>
+        <p class="is-pd">{p.text}</p>
+      </li>
+    ))}
+  </ol>
+</div>
+
+<style>
+  .isplit { position: relative; display: grid; }
+  .is-stage {
+    --p: 50%; /* how much of the photo is "after", measured from the reading start (right) */
+    position: relative; grid-area: 1 / 1;
+    aspect-ratio: 1; max-height: 40rem; width: 100%;
+    border-radius: var(--radius-lg); overflow: hidden;
+    background: var(--coral-100);
+  }
+  :global(.js:not(.reduced)) .is-stage { --p: 0%; }
+  :global(.js) .is-inview .is-stage { --p: 50%; }
+  /* 563 × 563 centred on the 785 × 640 stage */
+  .is-img { position: absolute; top: 6%; left: 14.15%; width: 71.7%; height: auto; aspect-ratio: 1; }
+  .is-raw { opacity: 0.92; image-rendering: pixelated; }
+  .is-clear { position: absolute; inset: 0; background: var(--coral-100); clip-path: inset(0 0 0 calc(100% - var(--p))); transition: clip-path 1.4s var(--ease-out) 0.2s; }
+  .is-divider {
+    position: absolute; top: 0; bottom: 0; right: var(--p); width: 3px; margin-right: -1.5px;
+    background: var(--coral); display: grid; place-items: center;
+    transition: right 1.4s var(--ease-out) 0.2s;
+  }
+  .is-divider img { width: 36px; height: 36px; max-width: none; }
+  .is-tag { position: absolute; top: 14px; padding: 0.15rem 0.75rem; border-radius: 99px; font-size: var(--fs-mono); line-height: 1.65; }
+  .is-tag--after { right: 14px; background: var(--coral); color: #fff; }
+  .is-tag--before { left: 14px; background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--muted-2); }
+
+  /* points float over the photo's corners */
+  .is-points {
+    position: relative; grid-area: 1 / 1; align-self: stretch;
+    display: grid; grid-template-columns: repeat(2, minmax(0, 13.5rem)); justify-content: space-between; align-content: space-between;
+    padding: 3.25rem 1rem 1rem; pointer-events: none;
+  }
+  .is-point {
+    pointer-events: auto;
+    display: grid; gap: 0.2rem; padding: 0.85rem 1rem; border-radius: 18px;
+    background: #fff; filter: drop-shadow(0 20px 20px rgb(125 38 20 / 0.3));
+  }
+  .is-point:nth-child(odd) { rotate: -1.5deg; }
+  .is-point:nth-child(even) { rotate: 1.5deg; }
+  .is-pn { color: var(--coral-700); font-weight: 600; }
+  .is-pt { font-size: 1rem; line-height: 1.5; }
+  .is-pd { font-size: 0.85rem; line-height: 1.6; color: var(--muted); }
+
+  @media (max-width: 700px) {
+    .is-points { grid-area: auto; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; padding: 1rem 0 0; }
+    .is-point, .is-point:nth-child(odd), .is-point:nth-child(even) { rotate: none; background: var(--cream); box-shadow: inset 0 0 0 1px var(--line); filter: none; }
+  }
+</style>

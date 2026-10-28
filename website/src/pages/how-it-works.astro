@@ -1,0 +1,164 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/sections/PageHero.astro";
+import HowItWorks from "../components/sections/HowItWorks.astro";
+import FinalCta from "../components/sections/FinalCta.astro";
+import Faq from "../components/sections/Faq.astro";
+import SectionHead from "../components/ui/SectionHead.astro";
+import CompareBoard from "../components/mock/CompareBoard.astro";
+import Arrow from "../components/brand/Arrow.astro";
+import Icon from "../components/ui/Icon.astro";
+import { meta, hero, steps, bulk, aiProcess, finalCta, faqs } from "../data/how-it-works";
+import { inAction } from "../data/home";
+
+const ex = inAction.example;
+// product thumbs cycling down the bulk fan
+const fanThumbs = ["thumb-tshirt", "thumb-bottle", "thumb-bag"];
+---
+<Base title={meta.title} description={meta.description}>
+  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} size="xl" center />
+
+  <HowItWorks copy={steps} id="steps" />
+
+  <section class="section bulk" id="bulk" aria-labelledby="bulk-title">
+    <div class="container bulk-grid">
+      <div class="bulk-copy">
+        <SectionHead eyebrow={bulk.eyebrow} id="bulk-title" sub={bulk.sub}>{bulk.headline}</SectionHead>
+        <div class="bulk-fan" aria-hidden="true" data-inview>
+          {[0, 1, 2, 3, 4, 5].map((n) => (
+            <i style={`--n:${n}`}>
+              <img class="bf-thumb" src={`/art/${fanThumbs[n % 3]}.svg`} alt="" width="38" height="38" />
+              <b></b>
+              <span class="bf-ok"><img src="/art/how-check-white.svg" alt="" width="13" height="13" /></span>
+            </i>
+          ))}
+          <span class="bf-cursor"><Arrow /></span>
+        </div>
+      </div>
+      <CompareBoard rows={bulk.rows} manualLabel={bulk.manualLabel} naqraLabel={bulk.naqraLabel} class="bulk-board" />
+    </div>
+  </section>
+
+  <section class="section aip" id="ai-process" data-theme="dark" aria-labelledby="aip-title">
+    <div class="container">
+      <SectionHead eyebrow={aiProcess.eyebrow} center id="aip-title" sub={aiProcess.sub}>{aiProcess.headline}</SectionHead>
+
+      <ol class="aip-flow" data-inview>
+        {aiProcess.stages.map((s, i) => (
+          <li class:list={["aip-stage", i === 1 && "is-ai"]} style={`--i:${i}`} data-reveal="card">
+            <p class="aip-latin mono">{String(i + 1).padStart(2, "0")} / {s.latin}</p>
+            <h3 class="aip-title">{s.title}</h3>
+            <p class="aip-text">{s.text}</p>
+            <div class="aip-ui" aria-hidden="true">
+              {i === 0 && (
+                <div class="aip-row is-raw">
+                  <img src="/art/thumb-tshirt-before.svg" alt="" width="40" height="40" />
+                  <span><b>{ex.before.title}</b><small>{ex.before.desc}</small></span>
+                </div>
+              )}
+              {i === 1 && (
+                <div class="aip-think">
+                  <img src="/art/how-sparkle.svg" alt="" width="22" height="22" class="aip-spark" />
+                  <i style="--w:92%"></i><i style="--w:74%"></i><i style="--w:84%"></i>
+                </div>
+              )}
+              {i === 2 && (
+                <div class="aip-row is-done">
+                  <img src="/art/thumb-tshirt-after.png" alt="" width="40" height="40" loading="lazy" decoding="async" />
+                  <span><b>{ex.after.title}</b><small class="aip-ok"><img src="/art/how-check-green.svg" alt="" width="14" height="14" /> SEO · Meta · Alt</small></span>
+                </div>
+              )}
+            </div>
+            {i < 2 && <span class="aip-arrow" aria-hidden="true"><Icon name="arrowStart" /></span>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <FinalCta copy={finalCta} />
+  <Faq {...faqs} />
+</Base>
+
+<style>
+  /* ---------- Bulk optimization in action ---------- */
+  .bulk { background: var(--cream); }
+  .bulk-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 4.5vw, 6rem); align-items: center; }
+  .bulk-copy { display: grid; gap: clamp(2rem, 3vw, 3rem); }
+  .bulk-board { max-width: 40rem; width: 100%; justify-self: end; }
+  /* a fan of product rows: one row, then many — same click */
+  .bulk-fan { position: relative; width: min(100%, 30rem); height: 19rem; margin-inline-start: 3rem; }
+  .bulk-fan i {
+    position: absolute; inset-inline: 0; top: 0; height: 3.975rem;
+    display: flex; align-items: center; gap: 0.9rem; padding-inline: 1rem;
+    border-radius: 18px; background: #fff; box-shadow: inset 0 0 0 1px var(--line);
+    filter: drop-shadow(0 16px 15px rgb(120 41 20 / 0.4));
+    translate: 0 calc(var(--n) * 2.35rem); rotate: calc(1deg - var(--n) * 1.6deg);
+    transition: translate 0.9s var(--ease-out), rotate 0.9s var(--ease-out), opacity 0.4s;
+    transition-delay: calc(var(--n) * 0.08s);
+  }
+  .bulk-fan i:first-child { background: var(--ink); box-shadow: none; filter: drop-shadow(0 20px 17px rgb(0 0 0 / 0.5)); }
+  :global(.js:not(.reduced)) .bulk-fan:not(.is-inview) i { translate: 0 0; rotate: 1deg; }
+  :global(.js:not(.reduced)) .bulk-fan:not(.is-inview) i:not(:first-child) { opacity: 0; }
+  .bf-thumb { width: 38px; height: 38px; flex: none; }
+  .bulk-fan b { flex: 1; height: 10px; border-radius: 5px; background: var(--line); }
+  .bulk-fan i:first-child b { background: linear-gradient(to right, var(--coral), var(--coral-200)); }
+  .bf-ok { display: grid; place-items: center; width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--ok); }
+  .bf-ok img { width: 13px; height: 13px; }
+  .bf-cursor { position: absolute; z-index: 1; inset-inline-start: -1.45rem; top: 1.15rem; width: 3.2rem; color: var(--coral); rotate: -10deg; }
+
+  /* ---------- AI optimization process ---------- */
+  .aip { background: var(--ink); color: #fff; }
+  .aip :global(.lead) { max-width: 46rem; color: var(--muted-2); }
+  .aip-flow {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1.5rem, 3vw, 3.5rem);
+    margin-top: clamp(2.5rem, 4vw, 4.5rem);
+  }
+  .aip-stage {
+    position: relative; display: flex; flex-direction: column; gap: 0.6rem;
+    padding: clamp(1.4rem, 1.9vw, 2.25rem); border-radius: var(--radius-lg);
+    background: #fff; color: var(--ink);
+  }
+  .aip-stage.is-ai { background: var(--coral); color: #fff; }
+  .aip-latin { color: var(--coral); font-weight: 600; }
+  .is-ai .aip-latin { color: #fff; }
+  .aip-title { font-size: var(--fs-h3); line-height: 1.5; }
+  .aip-text { color: var(--muted); }
+  .is-ai .aip-text { color: #fff; opacity: 0.9; }
+  .aip-ui { margin-top: auto; padding-top: 1rem; }
+  .aip-row { display: grid; grid-template-columns: 40px 1fr; gap: 0.75rem; align-items: center; padding: 0.75rem; border-radius: 16px; background: #fff; color: var(--ink); }
+  .aip-row > img { width: 40px; height: 40px; border-radius: 10px; }
+  .aip-row span { display: grid; min-width: 0; }
+  .aip-row b { font-weight: 600; font-size: 0.9rem; line-height: 1.5; }
+  .aip-row small { font-size: 0.75rem; color: var(--muted); }
+  .is-raw { background: var(--sand); }
+  .is-raw b { color: var(--muted); }
+  .aip-ok { display: inline-flex; align-items: center; gap: 0.3rem; color: var(--ok) !important; font-family: var(--font-mono); direction: ltr; justify-content: flex-end; }
+  .aip-think { display: grid; gap: 0.5rem; padding: 0.9rem; border-radius: 16px; background: #fff; }
+  .aip-spark { width: 22px; height: 22px; }
+  .aip-think i {
+    display: block; height: 9px; width: var(--w); border-radius: 99px;
+    background: linear-gradient(90deg, var(--coral-100) 0%, var(--coral-200) 50%, var(--coral-100) 100%);
+    background-size: 300% 100%; background-position: 100% 0;
+  }
+  .is-inview .aip-think i { animation: aip-shimmer 1.6s linear infinite; }
+  .is-inview .aip-spark { animation: aip-spin 2.4s linear infinite; }
+  @keyframes aip-shimmer { to { background-position: -50% 0; } }
+  @keyframes aip-spin { to { rotate: 360deg; } }
+  .aip-arrow {
+    position: absolute; z-index: 1; top: 50%; inset-inline-end: calc(-1 * clamp(1.5rem, 3vw, 3.5rem) / 2 - 1.2rem);
+    display: grid; place-items: center; width: 2.4rem; height: 2.4rem; margin-top: -1.2rem;
+    border-radius: 50%; background: #fff; color: var(--coral-700);
+  }
+  .aip-arrow :global(.icon) { width: 1.4rem; height: 1.4rem; }
+
+  @media (max-width: 1000px) {
+    .bulk-grid { grid-template-columns: minmax(0, 1fr); }
+    .bulk-board { justify-self: stretch; max-width: none; }
+    .aip-flow { grid-template-columns: minmax(0, 1fr); max-width: 34rem; margin-inline: auto; }
+    .aip-arrow { top: auto; bottom: calc(-1 * clamp(1.5rem, 3vw, 3.5rem) / 2 - 1.2rem); inset-inline-end: 50%; margin: 0 -1.2rem 0 0; rotate: -90deg; }
+  }
+  @media (max-width: 560px) {
+    .bulk-fan { margin-inline-start: 0; height: 16rem; }
+  }
+</style>

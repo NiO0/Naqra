@@ -1,9 +1,9 @@
 ---
-interface Props { eyebrow: string; sub?: string; center?: boolean; class?: string; id?: string }
-const { eyebrow, sub, center = false, class: cls = "", id } = Astro.props;
+interface Props { eyebrow?: string; sub?: string; center?: boolean; class?: string; id?: string; level?: "h1" | "h2" }
+const { eyebrow, sub, center = false, class: cls = "", id, level: Tag = "h2" } = Astro.props;
 ---
 <header class:list={["sec-head", center && "is-center", cls]}>
-  <p class="eyebrow" data-reveal="fade"><span>{eyebrow}</span></p>
-  <h2 class="h2" id={id} data-split><slot /></h2>
+  {eyebrow && <p class="eyebrow" data-reveal="fade"><span>{eyebrow}</span></p>}
+  <Tag class="h2" id={id} data-split><slot /></Tag>
   {sub && <p class="lead" data-reveal>{sub}</p>}
 </header>

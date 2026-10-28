@@ -1,0 +1,248 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/sections/PageHero.astro";
+import FinalCta from "../components/sections/FinalCta.astro";
+import Faq from "../components/sections/Faq.astro";
+import SectionHead from "../components/ui/SectionHead.astro";
+import Button from "../components/ui/Button.astro";
+import Icon from "../components/ui/Icon.astro";
+import InfoCard from "../components/ui/InfoCard.astro";
+import { meta, hero, audiences, useCases, finalCta, faqs } from "../data/solutions";
+---
+<Base title={meta.title} description={meta.description}>
+  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} primary={hero.primary} jumps={hero.jumps}>
+    <ul slot="visual" class="aud-tiles">
+      {audiences.tabs.map((t, i) => (
+        <li style={`--i:${i}`}>
+          <a href={`#${t.id}`} class="aud-tile">
+            <span class="aud-ico"><img src={`/art/icon-${t.icon}.svg`} alt="" width="30" height="30" /></span>
+            <span class="aud-name">{t.tab}</span>
+            <Icon name="arrowStart" class="aud-go" />
+          </a>
+        </li>
+      ))}
+    </ul>
+  </PageHero>
+
+  <!-- Solutions by audience: tabs (without JS all four panels show one after another) -->
+  <section class="section aud" id="by-audience" aria-labelledby="aud-title">
+    <div class="container" data-tabs>
+      <SectionHead eyebrow={audiences.eyebrow} center id="aud-title" sub={audiences.sub}>{audiences.headline}</SectionHead>
+
+      <div class="aud-tablist" role="tablist" aria-label={audiences.eyebrow} data-tabs-anchor data-reveal>
+        {audiences.tabs.map((t, i) => (
+          <button type="button" role="tab" class="aud-tab" id={`tab-${t.id}`} aria-controls={t.id} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1}>
+            <span class="aud-tab-ico"><img src={`/art/icon-${t.icon}.svg`} alt="" width="22" height="22" /></span>
+            {t.tab}
+          </button>
+        ))}
+      </div>
+
+      {audiences.tabs.map((t, i) => (
+        <div class="aud-panel" role="tabpanel" id={t.id} aria-labelledby={`tab-${t.id}`} tabindex="0">
+          <div class="aud-intro">
+            <p class="aud-kicker mono" data-tab-in>{String(i + 1).padStart(2, "0")} / {t.tab}</p>
+            <h3 class="aud-title" data-tab-in>{t.headline}</h3>
+            <p class="lead aud-text" data-tab-in>{t.text}</p>
+            <div data-tab-in><Button href={t.cta.href} icon>{t.cta.label}</Button></div>
+          </div>
+
+          <div class="aud-gives" data-tab-in data-carousel>
+            <div class="aud-gives-head">
+              <p class="aud-gives-label">{audiences.listLabel}</p>
+              <div class="aud-nav">
+                <button type="button" class="aud-arrow is-prev" data-carousel-prev aria-label="السابق"><Icon name="arrowStart" /></button>
+                <button type="button" class="aud-arrow" data-carousel-next aria-label="التالي"><Icon name="arrowStart" /></button>
+              </div>
+            </div>
+            <ul class="aud-cards" data-carousel-track>
+              {t.gives.map((g, n) => (
+                <li class="aud-card">
+                  <span class="aud-card-n mono" aria-hidden="true">{String(n + 1).padStart(2, "0")}</span>
+                  <p>{g}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {t.extra && (
+            <div class="aud-extra" data-tab-in>
+              <h4 class="aud-extra-title">{t.extra.title}</h4>
+              <ul class="aud-extra-grid">
+                {t.extra.items.map((x, n) => (
+                  <InfoCard as="li" title={x.title} text={x.text} n={n + 1} tone={n === 0 ? "coral" : "white"} />
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Solutions by use case: problem (faded) → Naqra's answer (brand) → tool tags -->
+  <section class="section uc" id="by-use-case" aria-labelledby="uc-title">
+    <div class="container">
+      <SectionHead eyebrow={useCases.eyebrow} id="uc-title" sub={useCases.sub}>{useCases.headline}</SectionHead>
+      <ol class="uc-grid">
+        {useCases.cards.map((c, i) => (
+          <li class="uc-card" data-reveal="card">
+            <div class="uc-problem">
+              <p class="uc-n mono" aria-hidden="true">{String(i + 1).padStart(2, "0")}</p>
+              <h3 class="uc-title">{c.title}</h3>
+              <p class="uc-label">{useCases.labels.problem}</p>
+              <p class="uc-text">{c.problem}</p>
+            </div>
+            <div class="uc-solution">
+              <img class="uc-mark" src="/art/brand-cursor.svg" alt="" width="40" height="42" />
+              <p class="uc-label">{useCases.labels.solution}</p>
+              <p class="uc-text">{c.solution}</p>
+              <p class="uc-label uc-tools-label">{useCases.labels.tools}</p>
+              <ul class="uc-tools">
+                {c.tools.map((tool) => <li><a href={tool.href}>{tool.label}</a></li>)}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <FinalCta copy={finalCta} />
+  <Faq {...faqs} />
+</Base>
+
+<style>
+  /* ---------- Hero: the four audiences as jump tiles ---------- */
+  .aud-tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(0.75rem, 1.2vw, 1.25rem); }
+  .aud-tiles li:nth-child(odd) { rotate: 1.5deg; }
+  .aud-tiles li:nth-child(even) { rotate: -1.5deg; translate: 0 1.5rem; }
+  .aud-tile {
+    display: grid; gap: 1.25rem; height: 100%;
+    padding: clamp(1.1rem, 1.7vw, 1.9rem); border-radius: var(--radius-lg);
+    background: #fff; box-shadow: inset 0 0 0 1px var(--line), 0 30px 60px -45px rgb(125 38 20 / 0.45);
+    transition: translate 0.5s var(--ease-out), background-color 0.4s, color 0.4s;
+  }
+  .aud-tiles li:first-child .aud-tile { background: var(--coral); color: #fff; box-shadow: none; }
+  .aud-tile:hover { translate: 0 -6px; }
+  .aud-ico { display: grid; place-items: center; width: 56px; height: 56px; border-radius: 18px; background: var(--coral-100); }
+  .aud-tiles li:first-child .aud-ico { background: rgb(255 255 255 / 0.85); }
+  .aud-ico img { width: 30px; height: 30px; }
+  .aud-name { font-family: var(--font-head); font-weight: 600; font-size: clamp(1.05rem, 1.35vw, 1.5rem); line-height: 1.4; }
+  .aud-go { width: 26px; height: 26px; justify-self: end; color: var(--coral-700); transition: translate 0.4s var(--ease-out); }
+  .aud-tiles li:first-child .aud-go { color: #fff; }
+  .aud-tile:hover .aud-go { translate: -6px 0; }
+
+  /* ---------- Audience tabs ---------- */
+  .aud { background: var(--paper); }
+  .aud :global(.lead) { max-width: 48rem; }
+  .aud-tablist {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem;
+    margin: clamp(2rem, 3vw, 3rem) auto clamp(2rem, 3.5vw, 3.75rem); padding: 0.4rem;
+    width: fit-content; max-width: 100%;
+    border-radius: 30px; background: var(--sand);
+  }
+  :global(html:not(.js)) .aud-tablist { display: none; }
+  .aud-tab {
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    padding: 0.55rem 1.2rem 0.55rem 0.6rem; border-radius: 999px;
+    font-weight: 500; font-size: 0.98rem; color: var(--ink);
+    transition: background-color 0.35s, color 0.35s;
+  }
+  .aud-tab:hover { background: rgb(255 255 255 / 0.7); }
+  .aud-tab[aria-selected="true"] { background: var(--ink); color: #fff; font-weight: 600; }
+  .aud-tab-ico { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: #fff; }
+  .aud-tab-ico img { width: 20px; height: 20px; }
+
+  .aud-panel {
+    display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: clamp(2rem, 4vw, 5rem);
+    padding: clamp(1.5rem, 3vw, 3.5rem); border-radius: var(--radius-lg);
+    background: var(--cream); box-shadow: inset 0 0 0 1px var(--line);
+    scroll-margin-top: 6rem;
+  }
+  .aud-panel[hidden] { display: none; }
+  .aud-panel + .aud-panel { margin-top: 1.5rem; } /* no-JS: panels stacked */
+  .aud-panel:focus-visible { outline-offset: 6px; }
+  .aud-intro { display: grid; align-content: start; justify-items: start; gap: 1rem; }
+  .aud-kicker { color: var(--coral-700); font-weight: 600; }
+  .aud-title { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.6rem, 2.3vw, 2.6rem); line-height: 1.35; text-wrap: balance; }
+
+  .aud-gives { min-width: 0; display: grid; align-content: start; gap: 0.15rem; }
+  .aud-gives-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .aud-gives-label { font-weight: 600; color: var(--heading); }
+  .aud-nav { display: flex; gap: 0.4rem; }
+  :global(html:not(.js)) .aud-nav { display: none; }
+  .aud-arrow {
+    display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+    background: var(--ink); color: #fff; transition: opacity 0.3s, background-color 0.3s;
+  }
+  .aud-arrow :global(.icon) { width: 22px; height: 22px; }
+  .aud-arrow.is-prev :global(.icon) { rotate: 180deg; }
+  .aud-arrow:hover:not(:disabled) { background: var(--coral); }
+  .aud-arrow:disabled { opacity: 0.25; cursor: default; }
+  /* side-scrolling sticky notes, snapping one by one: coral / charcoal / paper / coral */
+  .aud-cards {
+    display: grid; grid-auto-flow: column; grid-auto-columns: 13rem; gap: 1.05rem;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+    padding: 0.75rem 0.5rem 1.6rem; margin-inline: -0.5rem;
+  }
+  .aud-cards::-webkit-scrollbar { display: none; }
+  .aud-card {
+    scroll-snap-align: start;
+    display: grid; grid-template-rows: auto 1fr; gap: 1rem; min-height: 12.5rem;
+    padding: 1.25rem; background: var(--coral); color: #fff;
+    filter: drop-shadow(0 18px 15px rgb(125 38 20 / 0.6)); rotate: -1.6deg;
+  }
+  .aud-card:nth-child(4n + 2) { background: var(--ink); filter: drop-shadow(0 18px 15px rgb(0 0 0 / 0.5)); rotate: 1.2deg; }
+  .aud-card:nth-child(4n + 3) { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); filter: drop-shadow(0 18px 15px rgb(125 38 20 / 0.45)); rotate: -0.8deg; }
+  .aud-card:nth-child(4n + 4) { rotate: 1.5deg; }
+  .aud-card-n { justify-self: end; font-size: 1.75rem; font-weight: 600; line-height: 1; letter-spacing: 0.02em; }
+  .aud-card:nth-child(4n + 2) .aud-card-n, .aud-card:nth-child(4n + 3) .aud-card-n { color: var(--coral); }
+  .aud-card p { align-self: end; font-weight: 600; font-size: 1.05rem; line-height: 1.55; }
+
+  .aud-extra { grid-column: 1 / -1; display: grid; gap: 1.25rem; padding-top: clamp(1.5rem, 2.5vw, 2.5rem); border-top: 1px dashed var(--line-strong); }
+  .aud-extra-title { font-family: var(--font-head); font-size: clamp(1.3rem, 1.7vw, 1.9rem); font-weight: 700; line-height: 1.4; }
+  .aud-extra-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.875rem; }
+  .aud-extra-grid :global(.icard-title) { font-size: 1.05rem; }
+  .aud-extra-grid :global(.icard-text) { font-size: 0.92rem; }
+
+  /* ---------- Use cases ---------- */
+  .uc { background: var(--cream); }
+  .uc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 1.6vw, 1.75rem); margin-top: clamp(2.5rem, 3.5vw, 4rem); }
+  .uc-card { display: grid; grid-template-rows: auto 1fr; border-radius: var(--radius-lg); overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); background: #fff; }
+  .uc-problem { display: grid; gap: 0.45rem; padding: clamp(1.4rem, 2vw, 2.25rem); background: var(--sand); color: var(--muted); }
+  .uc-n { color: var(--muted-2); font-size: 1.6rem; font-weight: 600; line-height: 1.2; }
+  .uc-title { font-size: var(--fs-h3); line-height: 1.5; color: var(--ink); margin-bottom: 0.5rem; }
+  .uc-label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.01em; }
+  .uc-label::before { content: "( "; color: var(--coral); }
+  .uc-label::after { content: " )"; color: var(--coral); }
+  .uc-solution { position: relative; display: grid; align-content: start; gap: 0.45rem; padding: clamp(1.4rem, 2vw, 2.25rem); background: var(--coral); color: #fff; }
+  .uc-solution .uc-label::before, .uc-solution .uc-label::after { color: var(--ink); }
+  .uc-solution .uc-text { font-weight: 500; font-size: 1.05rem; line-height: 1.7; padding-inline-end: 3rem; }
+  .uc-mark { position: absolute; top: 1.2rem; inset-inline-end: 1.4rem; width: 2.5rem; height: auto; }
+  .uc-tools-label { margin-top: 0.75rem; }
+  .uc-tools { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .uc-tools a {
+    display: inline-flex; padding: 0.3rem 0.85rem; border-radius: 999px;
+    background: rgb(255 255 255 / 0.18); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.5);
+    font-size: 0.85rem; font-weight: 500; transition: background-color 0.3s, color 0.3s;
+  }
+  .uc-tools a:hover { background: #fff; color: var(--coral-700); }
+
+  @media (max-width: 1200px) {
+    .aud-extra-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  }
+  @media (max-width: 960px) {
+    .aud-panel { grid-template-columns: minmax(0, 1fr); }
+    .uc-grid { grid-template-columns: minmax(0, 1fr); }
+    .aud-tiles li:nth-child(even) { translate: 0 0.75rem; }
+  }
+  @media (max-width: 640px) {
+    .aud-tablist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; border-radius: 22px; }
+    .aud-tab { padding: 0.5rem; font-size: 0.85rem; gap: 0.4rem; border-radius: 16px; line-height: 1.4; text-align: start; }
+    .aud-tab-ico { width: 28px; height: 28px; flex: none; }
+    .aud-extra-grid { grid-template-columns: minmax(0, 1fr); }
+    .aud-panel { padding: 1.25rem; }
+    .aud-cards { grid-auto-columns: minmax(11rem, 64%); }
+  }
+</style>

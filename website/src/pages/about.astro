@@ -1,0 +1,157 @@
+---
+import Base from "../layouts/Base.astro";
+import PageHero from "../components/sections/PageHero.astro";
+import FinalCta from "../components/sections/FinalCta.astro";
+import SectionHead from "../components/ui/SectionHead.astro";
+import InfoCard from "../components/ui/InfoCard.astro";
+import Icon from "../components/ui/Icon.astro";
+import { tagline } from "../data/home";
+import { meta, hero, intro, why, mission, values, finalCta } from "../data/about";
+---
+<Base title={meta.title} description={meta.description}>
+  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} primary={hero.primary} size="sm" center />
+
+  <section class="section about-intro" aria-labelledby="intro-title">
+    <div class="container intro-grid">
+      <div class="intro-copy">
+        <SectionHead eyebrow={intro.eyebrow} id="intro-title">{intro.headline}</SectionHead>
+        {intro.paragraphs.map((p) => <p class="lead intro-p" data-reveal>{p}</p>)}
+      </div>
+      <div class="brand-stack" data-reveal="card">
+        <span class="bs-sheet" aria-hidden="true"></span>
+        <figure class="brand-card">
+          <span class="bs-tape" aria-hidden="true"></span>
+          <img class="brand-logo" src="/art/logo-reversed.svg" alt="نقرة — NAQRA" width="521" height="300" loading="lazy" />
+          <figcaption class="mono">{tagline}</figcaption>
+          <img class="brand-cursor" src="/art/brand-cursor.svg" alt="" width="64" height="67" />
+        </figure>
+        <img class="brand-sparkle" src="/art/sparkle-lg.svg" alt="" width="48" height="48" />
+        <img class="brand-sparkle is-sm" src="/art/sparkle-sm.svg" alt="" width="22" height="22" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section about-why" aria-labelledby="why-title">
+    <div class="container">
+      <SectionHead eyebrow={why.eyebrow} center id="why-title">{why.headline}</SectionHead>
+      <div class="why-pair">
+        <article class="why-block is-problem" data-reveal="card">
+          <p class="why-label">{why.problem.label}</p>
+          <p class="why-text">{why.problem.text}</p>
+        </article>
+        <span class="why-arrow" aria-hidden="true"><Icon name="arrowStart" /></span>
+        <article class="why-block is-answer" data-reveal="card">
+          <p class="why-label">{why.answer.label}</p>
+          <p class="why-text">{why.answer.text}</p>
+          <img class="why-cursor" src="/art/brand-cursor.svg" alt="" width="60" height="62" />
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section mission" data-theme="dark" aria-labelledby="mission-title">
+    <div class="container mission-inner">
+      <SectionHead eyebrow={mission.headline} center id="mission-title">{mission.text}</SectionHead>
+      <span class="mission-quote is-open" aria-hidden="true">”</span>
+      <span class="mission-quote is-close" aria-hidden="true">”</span>
+      <img class="mission-sparks" src="/art/hero-sparks.svg" alt="" width="80" height="70" aria-hidden="true" />
+      <img class="mission-cursor" src="/art/brand-cursor.svg" alt="" width="112" height="117" aria-hidden="true" />
+    </div>
+  </section>
+
+  <section class="section values" aria-labelledby="values-title">
+    <div class="container">
+      <SectionHead id="values-title">{values.headline}</SectionHead>
+      <ul class="values-grid">
+        {values.items.map((v, i) => (
+          <InfoCard as="li" title={v.title} text={v.text} n={i + 1} icon={v.icon} tone={i === 0 ? "coral" : i === 2 ? "ink" : "cream"} />
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <FinalCta copy={finalCta} />
+</Base>
+
+<style>
+  .about-intro { background: var(--paper); }
+  .intro-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 6rem); align-items: center; }
+  .intro-copy { display: grid; gap: 1.25rem; }
+  .intro-p { max-width: 42rem; }
+  /* coral brand card on a tilted paper sheet, taped down */
+  .brand-stack { position: relative; display: grid; place-items: center; aspect-ratio: 725.7 / 444.3; }
+  .bs-sheet {
+    position: absolute; width: 92%; height: 96%; translate: 2% 2%; rotate: 4deg;
+    border-radius: var(--radius-lg); background: var(--cream); box-shadow: inset 0 0 0 1px var(--line);
+  }
+  .brand-card {
+    position: relative; overflow: hidden; width: 91.2%; aspect-ratio: 661.7 / 380.3;
+    display: grid; justify-items: center; align-content: start; gap: 1.25rem; padding-top: 12%;
+    border-radius: var(--radius-lg); background: var(--coral); color: #fff;
+    box-shadow: 0 40px 70px -40px rgb(125 38 20 / 0.6);
+    rotate: -3deg;
+  }
+  .bs-tape {
+    position: absolute; top: 4.8%; left: 50%; translate: -50% 0; rotate: -0.7deg;
+    width: 19.3%; height: 6.7%; border-radius: 34px; background: #fff; box-shadow: 0 2px 6px rgb(0 0 0 / 0.08);
+  }
+  .brand-logo { width: 50.8%; height: auto; }
+  .brand-card figcaption { text-align: center; opacity: 0.9; font-size: min(var(--fs-mono), 2.4vw); }
+  .brand-cursor { position: absolute; right: 3.6%; bottom: 5%; width: 9.7%; height: auto; rotate: 8deg; opacity: 0.95; }
+  .brand-sparkle { position: absolute; top: 0; left: 1.1%; width: 6.6%; height: auto; }
+  .brand-sparkle.is-sm { top: auto; left: auto; right: 0; bottom: 2.7%; width: 3.1%; }
+
+  .about-why { background: var(--cream); }
+  .why-pair { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: clamp(1rem, 2vw, 2rem); align-items: stretch; margin-top: clamp(2.5rem, 3.5vw, 4rem); }
+  .why-block { position: relative; display: grid; align-content: start; gap: 1rem; padding: clamp(1.75rem, 3vw, 3.5rem); border-radius: var(--radius-lg); }
+  .is-problem { background: var(--sand); color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+  .is-answer { background: var(--coral); color: #fff; }
+  .why-label { font-weight: 600; }
+  .why-label::before { content: "( "; color: var(--coral); }
+  .why-label::after { content: " )"; color: var(--coral); }
+  .is-answer .why-label::before, .is-answer .why-label::after { color: var(--ink); }
+  .why-text { font-size: clamp(1.1rem, 1.35vw, 1.5rem); line-height: 1.8; font-weight: 500; }
+  .is-problem .why-text { font-weight: 400; }
+  .why-cursor { position: absolute; bottom: 1.25rem; inset-inline-start: 1.5rem; width: 3rem; height: auto; opacity: 0.9; }
+  .is-answer .why-text { padding-bottom: 3rem; }
+  .why-arrow { align-self: center; display: grid; place-items: center; width: 3.25rem; height: 3.25rem; border-radius: 50%; background: var(--ink); color: #fff; }
+  .why-arrow :global(.icon) { width: 1.6rem; height: 1.6rem; }
+
+  .mission { background: var(--ink); color: #fff; overflow: clip; }
+  .mission-inner { position: relative; }
+  .mission-inner { max-width: 74.5rem; padding-top: 5.2rem; } /* title width 1192 */
+  .mission :global(.h2) { max-width: 74.5rem; font-size: clamp(1.9rem, 3.4vw, 4rem); line-height: 1.4; }
+  .mission :global(.eyebrow) { font-size: 1.1rem; }
+  .mission-quote {
+    position: absolute; pointer-events: none;
+    font-family: var(--font-head); font-weight: 700; font-size: clamp(5rem, 7.5vw, 9rem); line-height: 1; color: var(--coral);
+  }
+  .mission-quote.is-open { top: 1.2rem; right: 0; }
+  .mission-quote.is-close { bottom: -1.4rem; left: -0.9rem; }
+  .mission-sparks { position: absolute; top: 0; left: -7.6rem; width: 5rem; height: auto; transform: rotate(10deg) scaleX(-1); }
+  .mission-cursor { position: absolute; bottom: -2.1rem; right: -7rem; width: 7rem; height: auto; rotate: -12deg; opacity: 0.9; }
+
+  .values { background: var(--paper); }
+  .values-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.9rem, 1.2vw, 1.4rem); margin-top: clamp(2rem, 3vw, 3.5rem); }
+  .values-grid :global(.icard) { min-height: 19rem; }
+  .values-grid :global(.icard-title) { margin-top: auto; }
+
+  @media (max-width: 1100px) {
+    .values-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 900px) {
+    .intro-grid { grid-template-columns: minmax(0, 1fr); }
+    .brand-stack { max-width: 36rem; width: 100%; justify-self: center; }
+    .mission-sparks, .mission-cursor { display: none; }
+    .mission-inner { padding-block: 4.2rem 3.5rem; }
+    .mission-quote { font-size: 4.5rem; }
+    .mission-quote.is-open { top: 0.6rem; }
+    .mission-quote.is-close { bottom: -1rem; left: 0; }
+    .why-pair { grid-template-columns: minmax(0, 1fr); }
+    .why-arrow { justify-self: center; rotate: -90deg; }
+  }
+  @media (max-width: 560px) {
+    .values-grid { grid-template-columns: minmax(0, 1fr); }
+    .values-grid :global(.icard) { min-height: 0; }
+  }
+</style>

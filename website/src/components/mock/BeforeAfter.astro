@@ -1,0 +1,118 @@
+---
+// Draggable before/after product preview (scripts/compare.ts). One per page.
+interface Props {
+  example: { label: string; before: { title: string; desc: string }; after: { title: string; desc: string } };
+  class?: string;
+}
+const { example: ex, class: cls = "" } = Astro.props;
+---
+<figure class:list={["ia-ba", cls]} data-ba>
+  <figcaption class="ia-ba-cap">
+    <span class="mono">BEFORE / AFTER</span>
+    <span class="ia-chip">{ex.label}</span>
+  </figcaption>
+
+  <div class="ba-stage" data-ba-stage style="--p:50">
+    <div class="ba-layer ba-before">
+      <div class="pcard">
+        <div class="pcard-img is-dull"><img src="/art/thumb-tshirt-before.svg" alt="" width="176" height="176" /></div>
+        <div class="pcard-body">
+          <p class="pcard-title">{ex.before.title}</p>
+          <p class="pcard-desc">{ex.before.desc}</p>
+          <div class="pcard-meta">
+            <span class="pm-miss">28/100 جاهزية السيو</span>
+            <span class="pm-miss">لا يوجد Meta · لا يوجد Alt</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ba-layer ba-after" aria-hidden="true">
+      <div class="pcard">
+        <div class="pcard-img"><img src="/art/thumb-tshirt-after.png" alt="" width="176" height="176" loading="lazy" decoding="async" /></div>
+        <div class="pcard-body">
+          <p class="pcard-title">{ex.after.title}</p>
+          <p class="pcard-desc">{ex.after.desc}</p>
+          <div class="pcard-meta">
+            <span class="pm-score">92/100 جاهزية السيو</span>
+            <span class="pm-chips"><i>قطن</i><i>رجالي</i><i>أكمام قصيرة</i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <span class="ba-tag ba-tag--before">قبل</span>
+    <span class="ba-tag ba-tag--after" aria-hidden="true">بعد</span>
+
+    <div class="ba-handle" data-ba-handle role="slider" tabindex="0" aria-label="قارن قبل وبعد التحسين" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+      <span class="ba-knob"><img src="/art/icon-arrow-left.svg" alt="" width="18" height="18" /><img src="/art/icon-arrow-left-2.svg" alt="" width="18" height="18" class="flip" /></span>
+    </div>
+  </div>
+</figure>
+
+<style>
+  /* ---------- Before / After (charcoal card) ---------- */
+  .ia-ba {
+    display: grid; align-content: start; gap: clamp(1.25rem, 2vw, 2.45rem);
+    padding: clamp(1.25rem, 1.7vw, 2rem) clamp(1.25rem, 1.7vw, 2rem) clamp(1.25rem, 1.5vw, 1.75rem);
+    border-radius: var(--radius-lg);
+    background: var(--ink); color: #fff;
+    position: relative; overflow: hidden;
+  }
+  .ia-ba-cap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .ia-chip { padding: 0.25rem 0.75rem; border-radius: 99px; background: #fff; color: var(--ink); font-size: var(--fs-mono); line-height: 1.65; }
+
+  .ba-stage { position: relative; display: grid; border-radius: 22px; touch-action: pan-y; user-select: none; }
+  .ba-layer { grid-area: 1 / 1; position: relative; }
+  .ba-after { clip-path: inset(0 0 0 calc(var(--p) * 1%) round 22px); }
+  .ba-tag {
+    position: absolute; top: 14px; z-index: 2;
+    padding: 0.1875rem 0.75rem; border-radius: 99px; font-size: var(--fs-mono); line-height: 1.65;
+  }
+  .ba-tag--before { inset-inline-end: 14px; background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--muted-2); }
+  .ba-tag--after { inset-inline-start: 14px; background: var(--coral); color: #fff; }
+
+  .pcard {
+    height: 100%;
+    display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 1.125rem;
+    padding: 1.125rem; border-radius: 22px;
+    background: #fff; color: var(--ink);
+  }
+  .ba-before .pcard { background: var(--sand); }
+  .pcard-img { border-radius: 16px; overflow: hidden; align-self: start; }
+  .pcard-img img { display: block; width: 100%; height: auto; }
+  .pcard-img.is-dull { opacity: 0.55; }
+  .pcard-body { display: grid; align-content: start; gap: 0.5rem; padding-top: 2.125rem; min-width: 0; }
+  .pcard-title { font-family: var(--font-display); font-weight: 600; font-size: clamp(1rem, 1vw, 1.1875rem); line-height: 1.5; }
+  .pcard-desc { font-size: var(--fs-mono); line-height: 1.65; color: var(--muted); }
+  .ba-before .pcard-title { color: var(--muted); }
+  .ba-before .pcard-desc { color: var(--muted-2); }
+  .pcard-meta { display: grid; justify-items: start; gap: 0.375rem; padding-top: 0.375rem; font-size: var(--fs-mono); line-height: 1.65; }
+  .pm-score { color: var(--ok); }
+  .pm-miss { color: var(--coral-700); }
+  .pm-chips { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+  .pm-chips i { font-style: normal; padding: 0.375rem 0.875rem 0.5rem; border-radius: 999px; background: var(--coral-100); color: var(--coral-700); font-weight: 500; font-size: 0.875rem; line-height: 1.65; }
+
+  .ba-handle {
+    position: absolute; top: -0.5rem; bottom: -0.5rem; left: calc(var(--p) * 1%);
+    width: 48px; margin-left: -24px; z-index: 3;
+    display: grid; place-items: center;
+    cursor: ew-resize; touch-action: none;
+  }
+  .ba-handle::before { content: ""; position: absolute; top: 0; bottom: 0; width: 3px; background: var(--coral); }
+  .ba-knob {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--coral);
+    transition: transform 0.35s var(--ease-spring);
+  }
+  .ba-handle:hover .ba-knob, .ba-handle.is-dragging .ba-knob { transform: scale(1.12); }
+  .ba-knob img { width: 18px; height: 18px; margin-inline: -2px; }
+  .ba-knob .flip { transform: rotate(180deg); }
+
+  @media (max-width: 480px) {
+    .pcard { grid-template-columns: 1fr; }
+    .pcard-img { width: 45%; }
+    .pcard-body { padding-top: 0; }
+  }
+</style>

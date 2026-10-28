@@ -1,11 +1,19 @@
 ---
 import SectionHead from "../ui/SectionHead.astro";
 import { howItWorks } from "../../data/home";
+
+type Step = { title: string; text: string; ui: string }; // ui: connect | select | options | ai | done
+interface Props {
+  // Defaults to the home page's section; the How-it-works page passes its own steps
+  copy?: { eyebrow: string; headline: string; sub?: string; steps: Step[] };
+  id?: string;
+}
+const { copy = howItWorks, id = "how-it-works" } = Astro.props;
 ---
-<section class="section how" id="how-it-works" aria-labelledby="how-title">
+<section class="section how" id={id} aria-labelledby="how-title">
   <div class="container">
-    <SectionHead eyebrow={howItWorks.eyebrow} center id="how-title" sub={howItWorks.sub}>
-      {howItWorks.headline}
+    <SectionHead eyebrow={copy.eyebrow} center id="how-title" sub={copy.sub}>
+      {copy.headline}
     </SectionHead>
 
     <div class="journey" data-journey>
@@ -16,7 +24,7 @@ import { howItWorks } from "../../data/home";
       <div class="j-traveler" data-journey-traveler aria-hidden="true"><img src="/art/how-traveler.svg" alt="" width="80" height="82" /></div>
 
       <ol class="j-steps">
-        {howItWorks.steps.map((s, i) => (
+        {copy.steps.map((s, i) => (
           <li class="j-step" data-step style={`--i:${i}`}>
             <span class="j-node" data-node aria-hidden="true"><span class="mono">{i + 1}</span></span>
             <article class="j-card">
@@ -25,6 +33,17 @@ import { howItWorks } from "../../data/home";
               <p class="j-text">{s.text}</p>
 
               <div class="j-ui" aria-hidden="true">
+                {s.ui === "connect" && (
+                  <ul class="ui-connect">
+                    {[["سلة", "Salla"], ["شوبيفاي", "Shopify"]].map(([ar, en], n) => (
+                      <li style={`--n:${n}`}>
+                        <span class="ui-pf"><b>{ar}</b> <span class="mono">{en}</span></span>
+                        <i class="ui-wire"></i>
+                        <span class="ui-link"><img src="/art/how-check-white.svg" alt="" width="12" height="12" /></span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 {s.ui === "select" && (
                   <ul class="ui-select">
                     {(["tshirt", "bottle", "bag"] as const).map((k, n) => (
@@ -118,6 +137,18 @@ import { howItWorks } from "../../data/home";
 
   /* Step mini-UIs (animate when the step becomes active) */
   .j-ui { padding: 0.875rem; border-radius: 16px; background: var(--cream); box-shadow: inset 0 0 0 1px var(--line); font-size: var(--fs-mono); line-height: 1.65; }
+
+  .ui-connect { display: grid; gap: 0.625rem; }
+  .ui-connect li { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.75rem; }
+  .ui-pf { display: inline-flex; align-items: baseline; gap: 0.4rem; padding: 0.25rem 0.75rem; border-radius: 10px; background: #fff; box-shadow: inset 0 0 0 1px var(--line); }
+  .ui-pf b { font-weight: 600; color: var(--ink); }
+  .ui-pf .mono { color: var(--muted); }
+  .ui-wire { height: 2px; background: repeating-linear-gradient(to left, var(--muted-2) 0 6px, transparent 6px 11px); transition: background 0.4s calc(var(--n) * 0.25s + 0.2s); }
+  .ui-link { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--muted-2); transition: background-color 0.3s calc(var(--n) * 0.25s + 0.4s), box-shadow 0.3s calc(var(--n) * 0.25s + 0.4s); }
+  .ui-link img { width: 12px; height: 12px; transform: scale(0); transition: transform 0.35s var(--ease-spring) calc(var(--n) * 0.25s + 0.45s); }
+  .is-active .ui-wire { background: repeating-linear-gradient(to left, var(--coral) 0 6px, transparent 6px 11px); }
+  .is-active .ui-link { background: var(--ok); box-shadow: none; }
+  .is-active .ui-link img { transform: scale(1); }
 
   .ui-select { display: grid; gap: 0.625rem; }
   .ui-select li { display: grid; grid-template-columns: auto 34px 1fr; align-items: center; gap: 0.75rem; }
