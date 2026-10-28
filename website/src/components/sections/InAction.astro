@@ -24,6 +24,8 @@ const ex = inAction.example;
   .ia-art { display: block; width: min(60%, 33rem); height: auto; margin: 0 auto clamp(0.5rem, 1vw, 1rem); }
   .in-action :global(.h2) { max-width: 82.25rem; letter-spacing: -0.04em; } /* 1316 */
 
+  /* Figma "Compare grid": the before/after stage is 330 tall */
+  .ia-grid :global(.ba-stage) { min-height: clamp(14rem, 17.2vw, 20.6rem); }
   .ia-grid {
     display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: clamp(1.25rem, 1.9vw, 2.25rem);

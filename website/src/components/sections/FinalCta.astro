@@ -8,8 +8,9 @@ interface Props {
   copy?: { headline: { before?: string; mark: string }; text?: string; primary: Link; secondary?: Link };
 }
 const { headline, text, primary, secondary } = Astro.props.copy ?? finalCta;
+const isHome = !Astro.props.copy;
 ---
-<section class="final" id="start" data-theme="coral" aria-labelledby="final-title" data-final>
+<section class:list={["final", isHome && "is-trimmed"]} id="start" data-theme="coral" aria-labelledby="final-title" data-final>
   <div class="container final-inner">
     <div class="final-copy">
       <h2 class="final-title" id="final-title">
@@ -52,6 +53,10 @@ const { headline, text, primary, secondary } = Astro.props.copy ?? finalCta;
   .final-mark { position: relative; display: inline-block; white-space: nowrap; }
   .final-mark > span { position: relative; z-index: 1; }
   .final-underline { position: absolute; left: 4%; right: 0; bottom: -0.2em; width: 96%; height: 0.41em; }
+  /* home (Figma "Final CTA"): each part trimmed to cap height / baseline, 49px apart */
+  .is-trimmed .final-title { gap: clamp(1.5rem, 2.55vw, 3.06rem); }
+  .is-trimmed .final-line, .is-trimmed .final-mark { text-box: trim-both cap alphabetic; }
+  .is-trimmed .final-underline { bottom: -0.33em; }
   .final-text { font-size: var(--fs-lead); line-height: 1.7; max-width: 38.75rem; } /* 620 */
   .final-ctas { display: flex; flex-wrap: wrap; gap: 0.875rem; }
 

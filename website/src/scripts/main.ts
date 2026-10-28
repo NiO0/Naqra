@@ -14,8 +14,8 @@ import { initFinale } from "./finale";
 import { initInView } from "./inview";
 import { initTabs } from "./tabs";
 import { initBilling } from "./pricing";
-import { initFeatureNav } from "./feature-nav";
 import { initContactForm } from "./contact-form";
+import { initCarousels } from "./carousel";
 
 initSmoothScroll();
 document.documentElement.classList.add("js-ready");
@@ -32,8 +32,8 @@ initFinale();
 initInView();
 initTabs();
 initBilling();
-initFeatureNav();
 initContactForm();
+initCarousels();
 
 const dashboard = initDashboard();
 // On the home page the hero's pressed button drives the dashboard; elsewhere it plays when in view

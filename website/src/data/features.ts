@@ -14,22 +14,10 @@ export const hero = {
   primary: { label: "ابدأ مع نقرة", href: routes.contact },
 };
 
-// Sticky jump-scroll line ("Features Navigation line")
-export const featureNav = [
-  { id: "content", label: "تحسين عناوين ووصف المنتجات", icon: "text" },
-  { id: "meta", label: "تحسين الميتا تاج", icon: "tag" },
-  { id: "on-page", label: "تحسينات السيو داخل صفحات منتجاتك", icon: "page" },
-  { id: "off-page", label: "تحسينات السيو خارج صفحات منتجاتك", icon: "link" },
-  { id: "images", label: "تحسين الصور", icon: "image" },
-  { id: "speed", label: "تحسين سرعة المتجر", icon: "gauge" },
-  { id: "ai", label: "التحسين الجماعي بالذكاء الاصطناعي", icon: "spark" },
-];
-
 type Point = { title: string; text: string };
 
 export type FeatureSection = {
   id: string;
-  latin: string; // small mono label above the headline
   headline: string;
   /** Shown as a "قريبًا" chip. Follows the "(قريبًا)" marks in the content doc's section headlines.
    * TODO(content): the header mega menu marks "images" as soon but not "ai"; the Features page
@@ -43,7 +31,6 @@ export const content: FeatureSection & {
   example: { label: string; before: { title: string; desc: string }; after: { title: string; desc: string } };
 } = {
   id: "content",
-  latin: "Bulk Product Content Optimization",
   headline: "تحسين عناوين ووصف المنتجات",
   sub: "عناوين منتجات واضحة ووصف يشرح المزايا من نقرة، متضمن الكلمات المفتاحية التي يبحث بها عملائك، ويساعد محركات البحث على فهم المنتج.",
   points: [
@@ -64,7 +51,6 @@ export const content: FeatureSection & {
 
 export const metaTags: FeatureSection & { serp: { label: string; url: string; title: string; desc: string } } = {
   id: "meta",
-  latin: "SEO Meta Tags Optimization",
   headline: "إنشاء وتحسين الميتا تاج لكل المنتجات",
   sub: "الميتا تاج هي أول ما يراه العميل عن منتجك في نتائج البحث، بنقرة يتم كتابة وتحسين عنوان ميتا لكل منتج بالمعايير المناسبة، ووصف ميتا مختصر وجذاب يشجع العميل على النقر والدخول إلى صفحة المنتج",
   points: [],
@@ -78,7 +64,6 @@ export const metaTags: FeatureSection & { serp: { label: string; url: string; ti
 
 export const onPage: FeatureSection = {
   id: "on-page",
-  latin: "On-Page SEO Optimization",
   headline: "تحسينات السيو داخل صفحات منتجاتك",
   sub: "نقرة تحسن جميع العناصر داخل صفحة المنتج التي تعتمد عليها محركات البحث لفهم المنتج وترتيبه، وتطبقها على كل المنتجات دفعة واحدة",
   points: [
@@ -91,7 +76,6 @@ export const onPage: FeatureSection = {
 
 export const offPage: FeatureSection = {
   id: "off-page",
-  latin: "Off-Page SEO Optimization",
   headline: "تحسينات السيو خارج صفحات المنتجات",
   soon: true,
   sub: "ظهور متجرك لا يعتمد على ما بداخل صفحات المنتجات وحدها، لذا تساعدك نقرة في بعض تحسينات السيو المرتبطة بالمتجر لتقوية حضوره في محركات البحث",
@@ -105,7 +89,6 @@ export const offPage: FeatureSection = {
 
 export const images: FeatureSection = {
   id: "images",
-  latin: "AI Product Image Optimization",
   headline: "تحسين صور المنتجات بالذكاء الاصطناعي",
   sub: "صور المنتجات جزء مهم من طريقة عرضها داخل المتجر الإلكتروني، تساعدك نقرة على تحسين صور منتجاتك باستخدام الذكاء الاصطناعي",
   points: [
@@ -118,7 +101,6 @@ export const images: FeatureSection = {
 
 export const speed: FeatureSection = {
   id: "speed",
-  latin: "Store Performance Optimization",
   headline: "تحسين ودعم سرعة متجرك وتجربة التصفح",
   soon: true,
   sub: "الصفحة الأسرع تعني تجربة أفضل لعميلك وفرصة أكبر للظهور في نتائج البحث، ونقرة تساعدك في تحسين بعض العوامل المؤثرة على سرعة المتجر",
@@ -131,7 +113,6 @@ export const speed: FeatureSection = {
 
 export const ai: FeatureSection = {
   id: "ai",
-  latin: "AI-Powered Bulk Workflow",
   headline: "قوة الذكاء الاصطناعي لتحسين آلاف المنتجات دفعة واحدة",
   soon: true,
   sub: "الفكرة في نقرة بسيطة: بدل أن تعدل كل منتج بنفسك، تختار المنتجات ونوع التحسين، والذكاء الاصطناعي ينفذ الباقي على كل المنتجات دفعة واحدة",

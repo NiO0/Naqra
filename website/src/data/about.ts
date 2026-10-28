@@ -8,14 +8,10 @@ export const meta = {
 
 export const hero = {
   eyebrow: "عن نقرة",
-  title: { before: "نقرة .. لأن تحسين متجرك", mark: "لا يجب أن يكون معقدًا" },
+  title: { before: ["نقـــرة .. لأن", "تحسين متجرك"], mark: "لا يجب أن يكون معقدًا" },
   sub: "أداة ذكية تساعد أصحاب المتاجر الإلكترونية ووكالات التسويق على تحسين المنتجات والمتاجر بشكل كامل باستخدام الذكاء الاصطناعي وبنقرة واحدة",
   primary: { label: "تواصل معنا", href: routes.contact },
 };
-
-// Moving line of the platforms Naqra works with.
-// TODO(assets): swap the typographic names for the official Salla / Shopify logos from their brand kits.
-export const platformsLine = ["سلة", "Salla", "شوبيفاي", "Shopify"];
 
 export const intro = {
   eyebrow: "نقرة",

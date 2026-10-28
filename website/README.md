@@ -37,7 +37,7 @@ src/
     brand/                ← Logo, Arrow (cursor + sparks), Wordmark — vector paths from "Naqra 2.ai"
     sections/             ← home-page sections (FinalCta, Faq, HowItWorks take props and are reused),
                             plus PageHero for the inner pages
-    features/             ← Features page: sticky jump line, section block, one visual per feature
+    features/             ← Features page: section block (big number, SOON stamp, tilted sheet), one visual per feature
     legal/                ← shared Privacy / Terms layout
     mock/                 ← product UI mock-ups (dashboard, product thumbnails)
     ui/                   ← Button, Icon (hand-drawn set), Scribble, Marquee, SectionHead, InfoCard

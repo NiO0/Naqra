@@ -8,11 +8,8 @@ export const meta = {
 
 export const hero = {
   eyebrow: "طريقة العمل",
-  title: { before: "كيف تعمل", mark: "نقرة؟" },
+  title: { before: "كيف تعمل", mark: "نقـــرة؟" },
   sub: "من منتج واحد إلى آلاف المنتجات بمتجرك .. تحسن نقرة عناوين المنتجات وأوصافها وبيانات SEO وصورها باستخدام الذكاء الاصطناعي، وتنفيذ التحسينات بشكل جماعي بدلًا من تعديل كل منتج على حدى.",
-  primary: { label: "ابدأ مع نقرة", href: routes.pricing },
-  // Mini workflow shown in the hero (ربط ← اختيار ← تحسين ← تطبيق)
-  flow: ["ربط", "اختيار", "تحسين", "تطبيق"],
 };
 
 export const steps = {

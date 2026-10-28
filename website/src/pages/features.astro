@@ -5,7 +5,6 @@ import FinalCta from "../components/sections/FinalCta.astro";
 import Faq from "../components/sections/Faq.astro";
 import Dashboard from "../components/mock/Dashboard.astro";
 import BeforeAfter from "../components/mock/BeforeAfter.astro";
-import FeatureNav from "../components/features/FeatureNav.astro";
 import FeatureBlock from "../components/features/FeatureBlock.astro";
 import SerpPreview from "../components/features/SerpPreview.astro";
 import ProductPageUI from "../components/features/ProductPageUI.astro";
@@ -13,40 +12,38 @@ import LinkFlow from "../components/features/LinkFlow.astro";
 import ImageSplit from "../components/features/ImageSplit.astro";
 import SpeedGauge from "../components/features/SpeedGauge.astro";
 import AiEditor from "../components/features/AiEditor.astro";
-import { meta, hero, featureNav, content, metaTags, onPage, offPage, images, speed, ai, finalCta, faqs } from "../data/features";
+import { meta, hero, content, metaTags, onPage, offPage, images, speed, ai, finalCta, faqs } from "../data/features";
 ---
 <Base title={meta.title} description={meta.description}>
   <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} primary={hero.primary}>
     <div slot="visual" class="hero-dash"><Dashboard /></div>
   </PageHero>
 
-  <FeatureNav items={featureNav} />
-
-  <FeatureBlock section={content} index={1} art="f-content">
+  <FeatureBlock section={content} index={1}>
     <BeforeAfter example={content.example} />
   </FeatureBlock>
 
-  <FeatureBlock section={metaTags} index={2} art="f-meta" tone="cream" points="none" reverse>
+  <FeatureBlock section={metaTags} index={2} tone="cream" points="none" reverse>
     <SerpPreview serp={metaTags.serp} />
   </FeatureBlock>
 
-  <FeatureBlock section={onPage} index={3} art="f-onpage">
+  <FeatureBlock section={onPage} index={3} tight>
     <ProductPageUI />
   </FeatureBlock>
 
-  <FeatureBlock section={offPage} index={4} art="f-offpage" tone="dark" reverse>
+  <FeatureBlock section={offPage} index={4} tone="dark" reverse>
     <LinkFlow />
   </FeatureBlock>
 
-  <FeatureBlock section={images} index={5} art="f-images" points="none">
+  <FeatureBlock section={images} index={5} points="none" sheet={false}>
     <ImageSplit points={images.points} />
   </FeatureBlock>
 
-  <FeatureBlock section={speed} index={6} art="f-speed" tone="cream" points="cards" reverse>
+  <FeatureBlock section={speed} index={6} tone="cream" points="cards" reverse>
     <SpeedGauge />
   </FeatureBlock>
 
-  <FeatureBlock section={ai} index={7} art="sparkle-lg" points="cards">
+  <FeatureBlock section={ai} index={7} points="cards">
     <AiEditor before={content.example.before.title} after={content.example.after.title} />
   </FeatureBlock>
 

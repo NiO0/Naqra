@@ -146,10 +146,15 @@ const { first, stretch, press } = hero.lines;
   .hero-micro li::before { content: "("; margin-inline-end: 0.35em; }
   .hero-micro li::after { content: ")"; margin-inline-start: 0.35em; }
 
-  .hero-visual {
-    grid-area: visual; position: relative; z-index: 2;
-    /* lean into the side gutter on wide screens so the product gets more room */
-    margin-inline-end: calc(-1 * clamp(0px, (100vw - var(--container)) / 2 - 1.5rem, 4.5rem));
+  .hero-visual { grid-area: visual; position: relative; z-index: 2; }
+  /* Figma: the 686px dashboard reaches past its column towards the headline and hangs below it */
+  @media (min-width: 961px) {
+    .hero-visual {
+      align-self: end;
+      margin-block-end: calc(-1 * clamp(0rem, 5.4vw, 6.5rem));
+      margin-inline: calc(-1 * clamp(0rem, 4.74vw, 5.7rem)) clamp(0rem, 0.78vw, 0.94rem);
+    }
+    .hero-visual :global(.dash) { font-size: clamp(9.5px, 1.75cqi, 15px); }
   }
 
   @media (max-width: 960px) {

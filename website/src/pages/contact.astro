@@ -9,7 +9,7 @@ const f = form.fields;
 const directItems = [direct.channels, direct.hours].filter((d) => d.value);
 ---
 <Base title={meta.title} description={meta.description}>
-  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} compact>
+  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} size="lg">
     <div slot="visual" class="contact-art" aria-hidden="true">
       <img src="/art/illus-faq.svg" alt="" width="297" height="311" />
     </div>
@@ -129,7 +129,7 @@ const directItems = [direct.channels, direct.hours].filter((d) => d.value);
 
 <style>
   .contact-art { display: grid; place-items: center; }
-  .contact-art img { width: min(100%, 17rem); height: auto; }
+  .contact-art img { width: min(100%, 13.4rem); height: auto; }
 
   .contact { background: var(--paper); padding-top: clamp(2rem, 4vw, 4.5rem); }
   .ct-tablist { display: flex; align-items: center; justify-content: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: clamp(2rem, 3vw, 3rem); }

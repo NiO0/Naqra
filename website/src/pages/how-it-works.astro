@@ -11,25 +11,12 @@ import Icon from "../components/ui/Icon.astro";
 import { meta, hero, steps, bulk, aiProcess, finalCta, faqs } from "../data/how-it-works";
 import { inAction } from "../data/home";
 
-// Hero mini workflow: connect → select → optimize → apply
-const flowIcons = ["link", "stack", "spark", "check"];
 const ex = inAction.example;
+// product thumbs cycling down the bulk fan
+const fanThumbs = ["thumb-tshirt", "thumb-bottle", "thumb-bag"];
 ---
 <Base title={meta.title} description={meta.description}>
-  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} primary={hero.primary}>
-    <figure slot="visual" class="hflow" data-inview aria-label={hero.flow.join(" ← ")}>
-      <ol class="hf-steps">
-        {hero.flow.map((label, i) => (
-          <li class="hf-step" style={`--i:${i}`}>
-            <span class="hf-ico"><Icon name={flowIcons[i]} /></span>
-            <span class="hf-n mono">{String(i + 1).padStart(2, "0")}</span>
-            <span class="hf-label">{label}</span>
-          </li>
-        ))}
-      </ol>
-      <span class="hf-cursor" aria-hidden="true"><Arrow /></span>
-    </figure>
-  </PageHero>
+  <PageHero eyebrow={hero.eyebrow} title={hero.title} sub={hero.sub} size="xl" center />
 
   <HowItWorks copy={steps} id="steps" />
 
@@ -37,8 +24,15 @@ const ex = inAction.example;
     <div class="container bulk-grid">
       <div class="bulk-copy">
         <SectionHead eyebrow={bulk.eyebrow} id="bulk-title" sub={bulk.sub}>{bulk.headline}</SectionHead>
-        <div class="bulk-stack" aria-hidden="true" data-inview>
-          {[0, 1, 2, 3, 4, 5].map((n) => <i style={`--n:${n}`}><b></b><em></em></i>)}
+        <div class="bulk-fan" aria-hidden="true" data-inview>
+          {[0, 1, 2, 3, 4, 5].map((n) => (
+            <i style={`--n:${n}`}>
+              <img class="bf-thumb" src={`/art/${fanThumbs[n % 3]}.svg`} alt="" width="38" height="38" />
+              <b></b>
+              <span class="bf-ok"><img src="/art/how-check-white.svg" alt="" width="13" height="13" /></span>
+            </i>
+          ))}
+          <span class="bf-cursor"><Arrow /></span>
         </div>
       </div>
       <CompareBoard rows={bulk.rows} manualLabel={bulk.manualLabel} naqraLabel={bulk.naqraLabel} class="bulk-board" />
@@ -70,7 +64,7 @@ const ex = inAction.example;
               )}
               {i === 2 && (
                 <div class="aip-row is-done">
-                  <img src="/art/thumb-tshirt-after.svg" alt="" width="40" height="40" loading="lazy" decoding="async" />
+                  <img src="/art/thumb-tshirt-after.png" alt="" width="40" height="40" loading="lazy" decoding="async" />
                   <span><b>{ex.after.title}</b><small class="aip-ok"><img src="/art/how-check-green.svg" alt="" width="14" height="14" /> SEO · Meta · Alt</small></span>
                 </div>
               )}
@@ -87,64 +81,31 @@ const ex = inAction.example;
 </Base>
 
 <style>
-  /* ---------- Hero: four connected chips, the brand cursor clicks each in turn ---------- */
-  .hflow {
-    position: relative; margin: 0;
-    padding: clamp(1.5rem, 2.6vw, 3rem);
-    border-radius: var(--radius-lg);
-    background: #fff; box-shadow: inset 0 0 0 1px var(--line), 0 40px 80px -50px rgb(125 38 20 / 0.35);
-  }
-  .hf-steps { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: clamp(0.5rem, 1vw, 1rem); }
-  .hf-steps::before { /* dashed connector behind the chips */
-    content: ""; position: absolute; top: 2.1rem; inset-inline: 12%; height: 2px;
-    background: repeating-linear-gradient(to left, var(--coral) 0 8px, transparent 8px 14px);
-  }
-  .hf-step { position: relative; display: grid; justify-items: center; gap: 0.4rem; text-align: center; }
-  .hf-ico {
-    display: grid; place-items: center; width: 4.2rem; height: 4.2rem; border-radius: 50%;
-    background: var(--cream); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line-strong);
-  }
-  .hf-ico :global(.icon) { width: 1.9rem; height: 1.9rem; }
-  .hf-n { color: var(--muted); font-size: 0.75rem; }
-  .hf-label { font-family: var(--font-head); font-weight: 600; font-size: clamp(1rem, 1.3vw, 1.4rem); line-height: 1.4; }
-  /* each chip lights up in turn, on a 6s loop */
-  .is-inview .hf-ico { animation: hf-on 6s var(--ease-out) infinite; animation-delay: calc(var(--i) * 0.9s); }
-  @keyframes hf-on {
-    0%, 4% { background: var(--cream); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line-strong); transform: scale(1); }
-    8% { transform: scale(0.9); }
-    14%, 70% { background: var(--coral); color: #fff; box-shadow: inset 0 0 0 0 transparent, 0 0 0 8px var(--coral-100); transform: scale(1); }
-    85%, 100% { background: var(--cream); color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line-strong); transform: scale(1); }
-  }
-  .hf-cursor { position: absolute; width: 3rem; color: var(--coral); inset-inline-start: 13%; top: 3.4rem; rotate: -12deg; }
-  .is-inview .hf-cursor { animation: hf-move 6s var(--ease-out) infinite; }
-  @keyframes hf-move {
-    0% { inset-inline-start: 13%; }
-    15% { inset-inline-start: 38%; }
-    30% { inset-inline-start: 63%; }
-    45%, 80% { inset-inline-start: 86%; }
-    100% { inset-inline-start: 13%; }
-  }
-  :global(.reduced) .hf-ico { background: var(--coral); color: #fff; }
-
   /* ---------- Bulk optimization in action ---------- */
   .bulk { background: var(--cream); }
   .bulk-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 4.5vw, 6rem); align-items: center; }
   .bulk-copy { display: grid; gap: clamp(2rem, 3vw, 3rem); }
   .bulk-board { max-width: 40rem; width: 100%; justify-self: end; }
-  /* a pile of product rows: one row, then many — same click */
-  .bulk-stack { position: relative; height: 9rem; max-width: 26rem; }
-  .bulk-stack i {
-    position: absolute; inset-inline: 0; top: 0;
-    display: flex; align-items: center; gap: 0.8rem; padding: 0.8rem 1rem;
-    border-radius: 18px; background: #fff; box-shadow: 0 12px 26px -16px rgb(120 41 20 / 0.35), inset 0 0 0 1px var(--line);
+  /* a fan of product rows: one row, then many — same click */
+  .bulk-fan { position: relative; width: min(100%, 30rem); height: 19rem; margin-inline-start: 3rem; }
+  .bulk-fan i {
+    position: absolute; inset-inline: 0; top: 0; height: 3.975rem;
+    display: flex; align-items: center; gap: 0.9rem; padding-inline: 1rem;
+    border-radius: 18px; background: #fff; box-shadow: inset 0 0 0 1px var(--line);
+    filter: drop-shadow(0 16px 15px rgb(120 41 20 / 0.4));
+    translate: 0 calc(var(--n) * 2.35rem); rotate: calc(1deg - var(--n) * 1.6deg);
     transition: translate 0.9s var(--ease-out), rotate 0.9s var(--ease-out), opacity 0.4s;
     transition-delay: calc(var(--n) * 0.08s);
   }
-  .bulk-stack i:first-child { opacity: 1; z-index: 2; }
-  .bulk-stack i:not(:first-child) { opacity: 0; }
-  .is-inview.bulk-stack i:not(:first-child) { opacity: 1; translate: 0 calc(var(--n) * 0.9rem); rotate: calc(var(--n) * -1.2deg); }
-  .bulk-stack b { flex: 1; height: 9px; border-radius: 99px; background: linear-gradient(90deg, var(--coral), var(--coral-200)); }
-  .bulk-stack em { width: 30px; height: 30px; border-radius: 9px; background: var(--coral-100); flex: none; }
+  .bulk-fan i:first-child { background: var(--ink); box-shadow: none; filter: drop-shadow(0 20px 17px rgb(0 0 0 / 0.5)); }
+  :global(.js:not(.reduced)) .bulk-fan:not(.is-inview) i { translate: 0 0; rotate: 1deg; }
+  :global(.js:not(.reduced)) .bulk-fan:not(.is-inview) i:not(:first-child) { opacity: 0; }
+  .bf-thumb { width: 38px; height: 38px; flex: none; }
+  .bulk-fan b { flex: 1; height: 10px; border-radius: 5px; background: var(--line); }
+  .bulk-fan i:first-child b { background: linear-gradient(to right, var(--coral), var(--coral-200)); }
+  .bf-ok { display: grid; place-items: center; width: 26px; height: 26px; flex: none; border-radius: 50%; background: var(--ok); }
+  .bf-ok img { width: 13px; height: 13px; }
+  .bf-cursor { position: absolute; z-index: 1; inset-inline-start: -1.45rem; top: 1.15rem; width: 3.2rem; color: var(--coral); rotate: -10deg; }
 
   /* ---------- AI optimization process ---------- */
   .aip { background: var(--ink); color: #fff; }
@@ -156,13 +117,13 @@ const ex = inAction.example;
   .aip-stage {
     position: relative; display: flex; flex-direction: column; gap: 0.6rem;
     padding: clamp(1.4rem, 1.9vw, 2.25rem); border-radius: var(--radius-lg);
-    background: rgb(255 255 255 / 0.06); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
+    background: #fff; color: var(--ink);
   }
-  .aip-stage.is-ai { background: var(--coral); box-shadow: none; }
+  .aip-stage.is-ai { background: var(--coral); color: #fff; }
   .aip-latin { color: var(--coral); font-weight: 600; }
   .is-ai .aip-latin { color: #fff; }
   .aip-title { font-size: var(--fs-h3); line-height: 1.5; }
-  .aip-text { color: var(--muted-2); }
+  .aip-text { color: var(--muted); }
   .is-ai .aip-text { color: #fff; opacity: 0.9; }
   .aip-ui { margin-top: auto; padding-top: 1rem; }
   .aip-row { display: grid; grid-template-columns: 40px 1fr; gap: 0.75rem; align-items: center; padding: 0.75rem; border-radius: 16px; background: #fff; color: var(--ink); }
@@ -173,11 +134,11 @@ const ex = inAction.example;
   .is-raw { background: var(--sand); }
   .is-raw b { color: var(--muted); }
   .aip-ok { display: inline-flex; align-items: center; gap: 0.3rem; color: var(--ok) !important; font-family: var(--font-mono); direction: ltr; justify-content: flex-end; }
-  .aip-think { display: grid; gap: 0.5rem; padding: 0.9rem; border-radius: 16px; background: rgb(255 255 255 / 0.2); }
-  .aip-spark { width: 22px; height: 22px; filter: brightness(0) invert(1); }
+  .aip-think { display: grid; gap: 0.5rem; padding: 0.9rem; border-radius: 16px; background: #fff; }
+  .aip-spark { width: 22px; height: 22px; }
   .aip-think i {
     display: block; height: 9px; width: var(--w); border-radius: 99px;
-    background: linear-gradient(90deg, rgb(255 255 255 / 0.35) 0%, #fff 50%, rgb(255 255 255 / 0.35) 100%);
+    background: linear-gradient(90deg, var(--coral-100) 0%, var(--coral-200) 50%, var(--coral-100) 100%);
     background-size: 300% 100%; background-position: 100% 0;
   }
   .is-inview .aip-think i { animation: aip-shimmer 1.6s linear infinite; }
@@ -198,8 +159,6 @@ const ex = inAction.example;
     .aip-arrow { top: auto; bottom: calc(-1 * clamp(1.5rem, 3vw, 3.5rem) / 2 - 1.2rem); inset-inline-end: 50%; margin: 0 -1.2rem 0 0; rotate: -90deg; }
   }
   @media (max-width: 560px) {
-    .hf-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 1.5rem; }
-    .hf-steps::before, .hf-cursor { display: none; }
-    .bulk-stack { height: 8rem; }
+    .bulk-fan { margin-inline-start: 0; height: 16rem; }
   }
 </style>

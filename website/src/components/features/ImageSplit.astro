@@ -1,13 +1,14 @@
 ---
-// Image optimization visual: one product photo, half soft & noisy ("before"), half crisp ("after"),
+// Image optimization visual: one product photo, half pixelated ("before"), half crisp ("after"),
 // with the section's points floating over it. The divider sweeps in when scrolled into view.
+// thumb-tshirt-pixelated.png is the Figma "Pixelate" effect (size 10, 16 colour levels) baked at 2x.
 interface Props { points: { title: string; text: string }[] }
 const { points } = Astro.props;
 ---
 <div class="isplit" data-inview>
   <div class="is-stage" aria-hidden="true">
-    <img class="is-img is-raw" src="/art/thumb-tshirt-after.svg" alt="" width="176" height="176" loading="lazy" decoding="async" />
-    <div class="is-clear"><img class="is-img" src="/art/thumb-tshirt-after.svg" alt="" width="176" height="176" loading="lazy" decoding="async" /></div>
+    <img class="is-img is-raw" src="/art/thumb-tshirt-pixelated.png" alt="" width="1126" height="1126" loading="lazy" decoding="async" />
+    <div class="is-clear"><img class="is-img" src="/art/thumb-tshirt-after.png" alt="" width="512" height="512" loading="lazy" decoding="async" /></div>
     <span class="is-divider"><img src="/art/how-sparkle.svg" alt="" width="20" height="20" /></span>
     <span class="is-tag is-tag--before">قبل</span>
     <span class="is-tag is-tag--after">بعد</span>
@@ -34,23 +35,16 @@ const { points } = Astro.props;
   }
   :global(.js:not(.reduced)) .is-stage { --p: 0%; }
   :global(.js) .is-inview .is-stage { --p: 50%; }
-  .is-img { position: absolute; inset: 6%; width: 88%; height: 88%; object-fit: contain; }
-  .is-raw { filter: blur(5px) saturate(0.45) contrast(0.8) brightness(1.04); }
-  .is-stage::after { /* coarse "pixel" grid over the raw half */
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background:
-      repeating-linear-gradient(to right, rgb(255 255 255 / 0.18) 0 1px, transparent 1px 14px),
-      repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.18) 0 1px, transparent 1px 14px);
-    clip-path: inset(0 var(--p) 0 0);
-    transition: clip-path 1.4s var(--ease-out) 0.2s;
-  }
+  /* 563 × 563 centred on the 785 × 640 stage */
+  .is-img { position: absolute; top: 6%; left: 14.15%; width: 71.7%; height: auto; aspect-ratio: 1; }
+  .is-raw { opacity: 0.92; image-rendering: pixelated; }
   .is-clear { position: absolute; inset: 0; background: var(--coral-100); clip-path: inset(0 0 0 calc(100% - var(--p))); transition: clip-path 1.4s var(--ease-out) 0.2s; }
   .is-divider {
     position: absolute; top: 0; bottom: 0; right: var(--p); width: 3px; margin-right: -1.5px;
     background: var(--coral); display: grid; place-items: center;
     transition: right 1.4s var(--ease-out) 0.2s;
   }
-  .is-divider img { width: 36px; height: 36px; padding: 8px; border-radius: 50%; background: var(--coral); max-width: none; }
+  .is-divider img { width: 36px; height: 36px; max-width: none; }
   .is-tag { position: absolute; top: 14px; padding: 0.15rem 0.75rem; border-radius: 99px; font-size: var(--fs-mono); line-height: 1.65; }
   .is-tag--after { right: 14px; background: var(--coral); color: #fff; }
   .is-tag--before { left: 14px; background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--muted-2); }
@@ -64,8 +58,7 @@ const { points } = Astro.props;
   .is-point {
     pointer-events: auto;
     display: grid; gap: 0.2rem; padding: 0.85rem 1rem; border-radius: 18px;
-    background: rgb(255 255 255 / 0.86); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 20px 40px -26px rgb(125 38 20 / 0.5);
+    background: #fff; filter: drop-shadow(0 20px 20px rgb(125 38 20 / 0.3));
   }
   .is-point:nth-child(odd) { rotate: -1.5deg; }
   .is-point:nth-child(even) { rotate: 1.5deg; }
@@ -75,6 +68,6 @@ const { points } = Astro.props;
 
   @media (max-width: 700px) {
     .is-points { grid-area: auto; grid-template-columns: minmax(0, 1fr); gap: 0.75rem; padding: 1rem 0 0; }
-    .is-point, .is-point:nth-child(odd), .is-point:nth-child(even) { rotate: none; background: var(--cream); box-shadow: inset 0 0 0 1px var(--line); }
+    .is-point, .is-point:nth-child(odd), .is-point:nth-child(even) { rotate: none; background: var(--cream); box-shadow: inset 0 0 0 1px var(--line); filter: none; }
   }
 </style>

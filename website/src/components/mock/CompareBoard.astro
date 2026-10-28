@@ -72,10 +72,9 @@ const { rows, manualLabel, naqraLabel, label = "طريقة التحسين", clas
   .ia-rows { display: grid; }
   .ia-row {
     display: grid; grid-template-columns: 5.6rem 1fr; align-items: center; gap: 1rem;
-    padding-block: 1rem;
-    border-bottom: 1px dashed color-mix(in srgb, currentColor 45%, transparent);
+    padding-block: calc(1rem - 0.15em); /* .ia-v adds 0.15em each side for the roll-over */
+    border-bottom: 1px dashed currentColor;
   }
-  [data-mode="naqra"] .ia-row { border-bottom-color: #fff; }
   .ia-k { font-size: var(--fs-mono); line-height: 1.65; }
   .ia-v { display: grid; overflow: hidden; padding-block: 0.15em; margin: 0; }
   .ia-val {

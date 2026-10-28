@@ -47,9 +47,15 @@ import { meta, hero, audiences, useCases, finalCta, faqs } from "../data/solutio
             <div data-tab-in><Button href={t.cta.href} icon>{t.cta.label}</Button></div>
           </div>
 
-          <div class="aud-gives" data-tab-in>
-            <p class="aud-gives-label">{audiences.listLabel}</p>
-            <ul class="aud-cards">
+          <div class="aud-gives" data-tab-in data-carousel>
+            <div class="aud-gives-head">
+              <p class="aud-gives-label">{audiences.listLabel}</p>
+              <div class="aud-nav">
+                <button type="button" class="aud-arrow is-prev" data-carousel-prev aria-label="السابق"><Icon name="arrowStart" /></button>
+                <button type="button" class="aud-arrow" data-carousel-next aria-label="التالي"><Icon name="arrowStart" /></button>
+              </div>
+            </div>
+            <ul class="aud-cards" data-carousel-track>
               {t.gives.map((g, n) => (
                 <li class="aud-card">
                   <span class="aud-card-n mono" aria-hidden="true">{String(n + 1).padStart(2, "0")}</span>
@@ -161,23 +167,38 @@ import { meta, hero, audiences, useCases, finalCta, faqs } from "../data/solutio
   .aud-kicker { color: var(--coral-700); font-weight: 600; }
   .aud-title { font-family: var(--font-head); font-weight: 700; font-size: clamp(1.6rem, 2.3vw, 2.6rem); line-height: 1.35; text-wrap: balance; }
 
-  .aud-gives { min-width: 0; display: grid; align-content: start; gap: 1rem; }
+  .aud-gives { min-width: 0; display: grid; align-content: start; gap: 0.15rem; }
+  .aud-gives-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
   .aud-gives-label { font-weight: 600; color: var(--heading); }
-  /* side-scrolling cards (per the content brief), snapping one by one */
-  .aud-cards {
-    display: grid; grid-auto-flow: column; grid-auto-columns: minmax(12.5rem, 1fr); gap: 0.875rem;
-    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain;
-    padding: 0.25rem 0.25rem 1rem; margin: -0.25rem -0.25rem 0;
-    scrollbar-width: thin; scrollbar-color: var(--coral-200) transparent;
+  .aud-nav { display: flex; gap: 0.4rem; }
+  :global(html:not(.js)) .aud-nav { display: none; }
+  .aud-arrow {
+    display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+    background: var(--ink); color: #fff; transition: opacity 0.3s, background-color 0.3s;
   }
+  .aud-arrow :global(.icon) { width: 22px; height: 22px; }
+  .aud-arrow.is-prev :global(.icon) { rotate: 180deg; }
+  .aud-arrow:hover:not(:disabled) { background: var(--coral); }
+  .aud-arrow:disabled { opacity: 0.25; cursor: default; }
+  /* side-scrolling sticky notes, snapping one by one: coral / charcoal / paper / coral */
+  .aud-cards {
+    display: grid; grid-auto-flow: column; grid-auto-columns: 13rem; gap: 1.05rem;
+    overflow-x: auto; scroll-snap-type: x mandatory; overscroll-behavior-x: contain; scrollbar-width: none;
+    padding: 0.75rem 0.5rem 1.6rem; margin-inline: -0.5rem;
+  }
+  .aud-cards::-webkit-scrollbar { display: none; }
   .aud-card {
     scroll-snap-align: start;
-    display: grid; align-content: space-between; gap: 2.25rem; min-height: 12rem;
-    padding: 1.25rem; border-radius: 24px; background: #fff; box-shadow: inset 0 0 0 1px var(--line);
+    display: grid; grid-template-rows: auto 1fr; gap: 1rem; min-height: 12.5rem;
+    padding: 1.25rem; background: var(--coral); color: #fff;
+    filter: drop-shadow(0 18px 15px rgb(125 38 20 / 0.6)); rotate: -1.6deg;
   }
-  .aud-card:first-child { background: var(--ink); color: #fff; box-shadow: none; }
-  .aud-card-n { color: var(--coral); font-size: 1.6rem; font-weight: 600; line-height: 1; }
-  .aud-card p { font-weight: 600; font-size: 1.05rem; line-height: 1.55; }
+  .aud-card:nth-child(4n + 2) { background: var(--ink); filter: drop-shadow(0 18px 15px rgb(0 0 0 / 0.5)); rotate: 1.2deg; }
+  .aud-card:nth-child(4n + 3) { background: #fff; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); filter: drop-shadow(0 18px 15px rgb(125 38 20 / 0.45)); rotate: -0.8deg; }
+  .aud-card:nth-child(4n + 4) { rotate: 1.5deg; }
+  .aud-card-n { justify-self: end; font-size: 1.75rem; font-weight: 600; line-height: 1; letter-spacing: 0.02em; }
+  .aud-card:nth-child(4n + 2) .aud-card-n, .aud-card:nth-child(4n + 3) .aud-card-n { color: var(--coral); }
+  .aud-card p { align-self: end; font-weight: 600; font-size: 1.05rem; line-height: 1.55; }
 
   .aud-extra { grid-column: 1 / -1; display: grid; gap: 1.25rem; padding-top: clamp(1.5rem, 2.5vw, 2.5rem); border-top: 1px dashed var(--line-strong); }
   .aud-extra-title { font-family: var(--font-head); font-size: clamp(1.3rem, 1.7vw, 1.9rem); font-weight: 700; line-height: 1.4; }
@@ -222,6 +243,6 @@ import { meta, hero, audiences, useCases, finalCta, faqs } from "../data/solutio
     .aud-tab-ico { width: 28px; height: 28px; flex: none; }
     .aud-extra-grid { grid-template-columns: minmax(0, 1fr); }
     .aud-panel { padding: 1.25rem; }
-    .aud-cards { grid-auto-columns: minmax(11rem, 72%); }
+    .aud-cards { grid-auto-columns: minmax(11rem, 64%); }
   }
 </style>
